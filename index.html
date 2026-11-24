@@ -41,6 +41,30 @@
             'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', '1038848405916345');
         fbq('track', 'PageView');
+
+        // Dispara PageView automaticamente nas trocas de tela do React Router
+        (function() {
+            var lastPath = location.pathname;
+            function checkRoute() {
+                if (location.pathname !== lastPath) {
+                    lastPath = location.pathname;
+                    if (typeof window.fbq === 'function') {
+                        window.fbq('track', 'PageView');
+                    }
+                }
+            }
+            var origPush = history.pushState;
+            history.pushState = function() {
+                origPush.apply(this, arguments);
+                setTimeout(checkRoute, 100);
+            };
+            var origReplace = history.replaceState;
+            history.replaceState = function() {
+                origReplace.apply(this, arguments);
+                setTimeout(checkRoute, 100);
+            };
+            window.addEventListener('popstate', checkRoute);
+        })();
     </script>
     <noscript><img height="1" width="1" style="display:none"
             src="https://www.facebook.com/tr?id=1038848405916345&ev=PageView&noscript=1" /></noscript>

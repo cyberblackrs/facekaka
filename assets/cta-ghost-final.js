@@ -1218,11 +1218,14 @@ const X = 600 * 1e3,
                   onClick: (ev) => {
                     const checkoutUrl = ae(o) || O;
                     try {
+                      if (typeof window.fbq === "function") {
+                        window.fbq("track", "InitiateCheckout");
+                      }
                       window.dataLayer = window.dataLayer || [];
                       window.dataLayer.push({
                         event: "pre_checkout_front",
                       });
-                    } catch {}
+                    } catch { }
                     window.location.href = checkoutUrl;
                   },
                   children: [
