@@ -35,7 +35,17 @@
             };
             if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
             n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
+            t.src = v;
+            t.onload = function () {
+                var ready = typeof f.fbq === 'function' && typeof f.fbq.callMethod === 'function';
+                b.documentElement.setAttribute('data-meta-pixel-status', ready ? 'ready' : 'blocked-or-unavailable');
+                console.info('[Meta Pixel] ' + (ready ? 'Biblioteca carregada' : 'Biblioteca indisponivel ou substituida pelo navegador'));
+            };
+            t.onerror = function () {
+                b.documentElement.setAttribute('data-meta-pixel-status', 'load-error');
+                console.warn('[Meta Pixel] Falha ao carregar fbevents.js: bloqueio do navegador ou erro de rede');
+            };
+            s = b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t, s)
         }(window, document, 'script',
             'https://connect.facebook.net/en_US/fbevents.js');
