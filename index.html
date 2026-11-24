@@ -52,17 +52,44 @@
         fbq('init', '1038848405916345');
         fbq('track', 'PageView');
 
-        // Dispara PageView automaticamente nas trocas de tela do React Router
+        // Rastreamento transparente de etapas da simulação (sem dados pessoais e sem duplicidades)
         (function() {
+            var trackedStages = new Set();
             var lastPath = location.pathname;
+
+            function trackStage(stageKey, eventName, params, isCustom) {
+                if (trackedStages.has(stageKey)) return;
+                trackedStages.add(stageKey);
+                if (typeof window.fbq === 'function') {
+                    if (isCustom) {
+                        window.fbq('trackCustom', eventName, params || {});
+                    } else {
+                        window.fbq('track', eventName, params || {});
+                    }
+                }
+            }
+
+            function evaluateRoute(path) {
+                if (path.startsWith('/feed')) {
+                    trackStage('stage_feed', 'ViewContent', { content_name: 'Feed_Preview', content_category: 'simulation_stage' });
+                } else if (path.startsWith('/cta')) {
+                    trackStage('stage_cta', 'ViewContent', { content_name: 'Offer_CTA', content_category: 'sales_page' });
+                }
+            }
+
+            // Checagem na carga inicial
+            evaluateRoute(lastPath);
+
             function checkRoute() {
                 if (location.pathname !== lastPath) {
                     lastPath = location.pathname;
                     if (typeof window.fbq === 'function') {
                         window.fbq('track', 'PageView');
                     }
+                    evaluateRoute(lastPath);
                 }
             }
+
             var origPush = history.pushState;
             history.pushState = function() {
                 origPush.apply(this, arguments);
@@ -74,6 +101,29 @@
                 setTimeout(checkRoute, 100);
             };
             window.addEventListener('popstate', checkRoute);
+
+            // Etapa: Confirmação de Idade (sem dados privados)
+            document.addEventListener('click', function(e) {
+                var btn = e.target && e.target.closest ? e.target.closest('#ghost-age-yes') : null;
+                if (btn) {
+                    trackStage('stage_age', 'AgeConfirmed', { content_name: 'Age_Gate' }, true);
+                }
+            }, true);
+
+            // Etapa: Busca do Perfil Iniciada (disparada no retorno da API - SEM nome de usuário)
+            window.addEventListener('gs:public-data', function() {
+                trackStage('stage_search', 'Search', { content_category: 'profile_analysis' });
+            });
+
+            // Etapa: Tentativa de Acesso a Conteúdo Bloqueado (Stories/Mídias restritas/Banner VIP)
+            document.addEventListener('click', function(e) {
+                var el = e.target && e.target.closest ? e.target.closest('.ig-preview-banner, [data-image], .cta-message-system-btn, button') : null;
+                if (!el) return;
+                var txt = (el.textContent || '').toLowerCase();
+                if (el.classList.contains('ig-preview-banner') || el.hasAttribute('data-image') || txt.includes('bloqueada') || txt.includes('seja vip') || txt.includes('desbloquear')) {
+                    trackStage('stage_blocked_' + location.pathname, 'BlockedFeatureAttempt', { content_name: 'VIP_Feature_Blocked' }, true);
+                }
+            }, true);
         })();
     </script>
     <noscript><img height="1" width="1" style="display:none"
