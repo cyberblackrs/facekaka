@@ -1,0 +1,33 @@
+/* Estilos limitados às rotas que perderam seus bundles antigos. */
+.gs-recovery{min-height:100dvh;box-sizing:border-box;padding:0 18px 60px;background:#0c1014;color:#f5f5f5;font:15px Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+.gs-recovery *{box-sizing:border-box;}
+.gs-recovery-header{display:flex;align-items:center;justify-content:space-between;gap:14px;max-width:980px;margin:auto;padding:26px 0 32px;}
+.gs-recovery-brand{font-weight:800;font-size:23px;letter-spacing:-.04em;color:#f5f5f5;text-decoration:none;}
+.gs-recovery-toplink{color:#a8a8a8;text-decoration:none;font-size:13px;font-weight:600;}
+.gs-recovery-panel{max-width:550px;margin:18px auto 0;padding:34px 28px 32px;border:1px solid #262a2e;border-radius:22px;background:#171a1f;box-shadow:0 25px 85px #0004;}
+.gs-recovery-panel h1{font-size:clamp(23px,5vw,30px);line-height:1.13;letter-spacing:-.035em;margin:8px 0 10px;font-weight:800;color:#f5f5f5;}
+.gs-recovery-description{font-size:14px;line-height:1.6;color:#a8a8a8;margin:0 0 26px;}
+.gs-recovery-progress{font-size:12px;color:#b4b4b4;font-weight:600;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.gs-recovery-progress-track{height:5px;flex:1;background:#34373d;border-radius:100px;overflow:hidden;}
+.gs-recovery-progress-track i{display:block;height:100%;background:#3797f0;border-radius:100px;}
+.gs-recovery-profile{display:flex;align-items:center;gap:14px;border-radius:16px;border:1px solid #34383f;background:#1d2229;padding:14px;}
+.gs-recovery-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;flex:0 0 56px;background:#30343a;}
+.gs-recovery-user{display:flex;flex-direction:column;gap:5px;min-width:0;}
+.gs-recovery-user strong{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.gs-recovery-user small{font-size:12px;color:#a8a8a8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.gs-recovery-stats{display:flex;justify-content:space-between;gap:8px;padding:23px 6px 28px;}
+.gs-recovery-stat{display:flex;flex-direction:column;align-items:center;flex:1;gap:4px;text-align:center;}
+.gs-recovery-stat strong{font-size:18px;font-weight:700;}
+.gs-recovery-stat span{font-size:11px;color:#a8a8a8;}
+.gs-recovery-actions{display:flex;gap:12px;}
+.gs-recovery-actions a{display:inline-flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;font-size:14px;font-weight:700;min-height:46px;border-radius:10px;padding:12px 16px;}
+.gs-recovery-back{flex:0 0 110px;border:1px solid #3c424a;color:#eee;}
+.gs-recovery-next{flex:1;background:#0e82f8;color:#fff;}
+.gs-recovery-light{background:#f8fafc;color:#111827;}
+.gs-recovery-light .gs-recovery-brand{color:#0f172a;}
+.gs-recovery-light .gs-recovery-panel{background:white;border-color:#e2e8f0;box-shadow:0 24px 70px #0f172a13;}
+.gs-recovery-light .gs-recovery-panel h1{color:#0f172a;}
+.gs-recovery-light .gs-recovery-profile{background:#f8fafc;border-color:#e2e8f0;}
+.gs-recovery-light .gs-recovery-user strong,.gs-recovery-light .gs-recovery-stat strong{color:#0f172a;}
+.gs-recovery-light .gs-recovery-back{color:#475569;border-color:#cbd5e1;}
+@media(max-width:420px){.gs-recovery{padding-left:12px;padding-right:12px}.gs-recovery-panel{padding:26px 18px}.gs-recovery-back{flex-basis:90px}.gs-recovery-stat strong{font-size:16px}}

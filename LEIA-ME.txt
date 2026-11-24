@@ -1,0 +1,1 @@
+Extraia os três arquivos sobre a pasta do projeto V8.12.2 (1), mantendo as subpastas e substituindo os arquivos correspondentes. Reinicie npm run dev. O primeiro retrato é o perfil público consultado, os seguintes são exemplos fictícios, identificados como demo. Nenhuma credencial ou imagem foi alterada.

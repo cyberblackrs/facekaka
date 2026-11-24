@@ -1,0 +1,154 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/api/avatar",
+      "destination": "/api/index?handler=avatar"
+    },
+    {
+      "source": "/api/proxy/instagram.php",
+      "destination": "/api/index?handler=instagram"
+    },
+    {
+      "source": "/api/proxy/hikerapi.php",
+      "destination": "/api/index?handler=compat"
+    },
+    {
+      "source": "/api/proxy/leads.php",
+      "destination": "/api/index?handler=leads"
+    },
+    {
+      "source": "/api/followers",
+      "destination": "/api/index?handler=followers"
+    },
+    {
+      "source": "/api/posts",
+      "destination": "/api/index?handler=posts"
+    },
+    {
+      "source": "/api/following",
+      "destination": "/api/index?handler=following"
+    },
+    {
+      "source": "/api/location",
+      "destination": "/api/index?handler=location"
+    },
+    {
+      "source": "/api/profile",
+      "destination": "/api/index?handler=profile"
+    },
+    {
+      "source": "/api/diagnostics",
+      "destination": "/api/index?handler=diagnostics"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/index?handler=health"
+    },
+    {
+      "source": "/images/:path*",
+      "destination": "https://stalkeia.ai/images/:path*"
+    },
+    {
+      "source": "/favicon.png",
+      "destination": "https://stalkeia.ai/favicon.png"
+    },
+    {
+      "source": "/feed",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/direct",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/chat/:chatId",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/notifications",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cta",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/white-page",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/inicio1",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/inicio2",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/inicio3",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/inicio4",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/in-ghostspy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/in-ghostspy/results",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ghostspy-v2",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ghostspy-v2/results",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ghostspy-v2/backredirect",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https: data: blob:; connect-src 'self' https://get.geojs.io; media-src 'self' blob:; form-action 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/cta/",
+      "destination": "/cta",
+      "permanent": false
+    },
+    {
+      "source": "/back-redirect",
+      "destination": "/cta",
+      "permanent": false
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "ghostspy-v8-9-notas-e-chat",
+  "version": "8.12.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node dev-server.mjs",
+    "start": "node dev-server.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
