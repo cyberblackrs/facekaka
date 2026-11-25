@@ -26,12 +26,16 @@ loadEnv('.env.local');
 loadEnv('.env');
 
 const MIME={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.jpg':'image/jpeg','.svg':'image/svg+xml'};
-const FILES=new Set(['assets-local/notes/pessoa-01.jpg','assets-local/notes/pessoa-02.jpg','assets-local/notes/pessoa-03.jpg','assets-local/notes/pessoa-04.jpg','assets-local/notes/pessoa-05.jpg','assets-local/notes/pessoa-06.jpg','assets-local/notes/pessoa-07.jpg','assets-local/notes/pessoa-08.jpg','index.html','age-gate.css','age-gate.js','consulta-rapidapi.js','atualizar-seguidos.js','notas-publicas.js','chat-nome.js','geo-context.js','instagram-dark-ui.js','seguranca.js','rotas.js','estado-navegacao.js','assets-local/ghost-theme.css','assets-local/instagram-wordmark.svg','assets-local/route-recovery.css','assets-local/stories/story-01.jpg','assets-local/stories/story-02.jpg','assets-local/stories/story-03.jpg','assets-local/stories/story-04.jpg','assets-local/stories/story-05.jpg','assets-local/stories/story-06.jpg','assets-local/stories/story-07.jpg','assets-local/stories/story-08.jpg','assets-local/stories/story-09.jpg','assets-local/stories/story-10.jpg','assets-local/stories/story-11.jpg','assets-local/stories/story-12.jpg','assets-local/stories/story-13.jpg','assets-local/stories/story-14.jpg','assets-local/stories/story-15.jpg','assets-local/stories/story-16.jpg']);
+const FILES=new Set(['obrigado.html','obrigado.css','assets-local/notes/pessoa-01.jpg','assets-local/notes/pessoa-02.jpg','assets-local/notes/pessoa-03.jpg','assets-local/notes/pessoa-04.jpg','assets-local/notes/pessoa-05.jpg','assets-local/notes/pessoa-06.jpg','assets-local/notes/pessoa-07.jpg','assets-local/notes/pessoa-08.jpg','index.html','age-gate.css','age-gate.js','consulta-rapidapi.js','atualizar-seguidos.js','notas-publicas.js','chat-nome.js','geo-context.js','instagram-dark-ui.js','seguranca.js','rotas.js','estado-navegacao.js','assets-local/ghost-theme.css','assets-local/instagram-wordmark.svg','assets-local/route-recovery.css','assets-local/stories/story-01.jpg','assets-local/stories/story-02.jpg','assets-local/stories/story-03.jpg','assets-local/stories/story-04.jpg','assets-local/stories/story-05.jpg','assets-local/stories/story-06.jpg','assets-local/stories/story-07.jpg','assets-local/stories/story-08.jpg','assets-local/stories/story-09.jpg','assets-local/stories/story-10.jpg','assets-local/stories/story-11.jpg','assets-local/stories/story-12.jpg','assets-local/stories/story-13.jpg','assets-local/stories/story-14.jpg','assets-local/stories/story-15.jpg','assets-local/stories/story-16.jpg']);
 const ROUTES=new Set(['/','/feed','/direct','/notifications','/cta','/white-page','/inicio1','/inicio2','/inicio3','/inicio4','/in-ghostspy','/in-ghostspy/results','/ghostspy-v2','/ghostspy-v2/results','/ghostspy-v2/backredirect']);
 function respond(res,status,message,mime='text/plain; charset=utf-8') {
  res.statusCode=status;
  res.setHeader('Content-Type',mime);
  res.setHeader('Cache-Control','no-store');
+ res.setHeader('X-Content-Type-Options','nosniff');
+ res.setHeader('X-Frame-Options','SAMEORIGIN');
+ res.setHeader('X-XSS-Protection','1; mode=block');
+ res.setHeader('Referrer-Policy','no-referrer');
  res.end(message);
 }
 async function remoteAsset(req,res,path,search) {
@@ -68,13 +72,18 @@ const server=createServer(async(req,res)=>{
     return await remoteAsset(req,res,pathname,target.search);
   }
   let file=null;
-  if(ROUTES.has(pathname)||/^\/chat\/[1-5]$/.test(pathname))file='index.html';
+  if(pathname==='/obrigado')file='obrigado.html';
+  else if(ROUTES.has(pathname)||/^\/chat\/[1-5]$/.test(pathname))file='index.html';
   else if(FILES.has(pathname.slice(1)))file=pathname.slice(1);
   if(!file)return respond(res,404,'Não encontrado');
   if(req.method!=='GET' && req.method!=='HEAD')return respond(res,405,'Método não permitido');
   const body=readFileSync(resolve(ROOT,file));
   res.setHeader('Content-Type',MIME[extname(file)]||'application/octet-stream');
   res.setHeader('Cache-Control','no-store');
+  res.setHeader('X-Content-Type-Options','nosniff');
+  res.setHeader('X-Frame-Options','SAMEORIGIN');
+  res.setHeader('X-XSS-Protection','1; mode=block');
+  res.setHeader('Referrer-Policy','no-referrer');
   res.statusCode=200;
   res.end(req.method==='HEAD'?undefined:body);
  }catch(e){console.error('Erro no servidor:',e?.message);if(!res.headersSent)respond(res,500,'Erro no servidor de desenvolvimento');else res.end();}

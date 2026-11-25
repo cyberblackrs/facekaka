@@ -48,7 +48,7 @@ export default async function handler(req,res){
   const url=new URL(req.url||'/', 'https://app.invalid');
   const kind=String(req.query?.handler||url.searchParams.get('handler')||'profile');
   if(!['GET','HEAD','POST'].includes(req.method))return send(res,405,{error:'Método não permitido.'});
-  if(kind==='health')return send(res,200,{ok:true,provider:'RapidAPI',version:'8.12.2',configured:Boolean(process.env.RAPIDAPI_KEY),hiker_configured:Boolean(process.env.HIKERAPI_KEY),sources:configuredProfileProviders().map(p=>p.name),following_provider:'somente consulta manual (Notas ilustrativas)',location:'geojs'});
+  if(kind==='health')return send(res,200,{ok:true,version:'8.12.2',hiker_configured:Boolean(process.env.HIKERAPI_KEY)});
   // Apenas recupera imagens de CDN: ZERO requisições à RapidAPI/HikerAPI.
   if(kind==='avatar'){
     if(req.method!=='GET'&&req.method!=='HEAD')return send(res,405,{error:'Método não permitido.'});

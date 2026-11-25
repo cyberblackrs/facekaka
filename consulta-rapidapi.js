@@ -1,4 +1,3 @@
-/* Ponte de dados públicos do backend para o frontend original. A chave permanece no servidor. */
 (()=>{'use strict';
  const nativeFetch=window.fetch.bind(window);
  const valid=u=>typeof u==='string'&&/^[A-Za-z0-9._]{1,30}$/.test(u);

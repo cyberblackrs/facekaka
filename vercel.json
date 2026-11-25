@@ -40,10 +40,6 @@
       "destination": "/api/index?handler=profile"
     },
     {
-      "source": "/api/diagnostics",
-      "destination": "/api/index?handler=diagnostics"
-    },
-    {
       "source": "/api/health",
       "destination": "/api/index?handler=health"
     },
@@ -54,6 +50,10 @@
     {
       "source": "/favicon.png",
       "destination": "https://stalkeia.ai/favicon.png"
+    },
+    {
+      "source": "/obrigado",
+      "destination": "/obrigado.html"
     },
     {
       "source": "/feed",
@@ -125,8 +125,16 @@
           "value": "nosniff"
         },
         {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
           "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
+          "value": "no-referrer"
         },
         {
           "key": "Permissions-Policy",

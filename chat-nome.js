@@ -1,7 +1,3 @@
-/* GhostSpy V8.9.1 — personalização da saudação ilustrativa do chat.
- * Prioriza PRIMEIRO NOME do nome exibido no perfil público (full_name), não o @.
- * Sem consultas extras ao Instagram ou acesso a mensagens privadas.
- */
 (()=>{'use strict';
  const suffix=/^\s*(?:(?:A|[\p{L}\p{N}._@-]{1,30})\s*,?\s+)adivinha\s+o\s+que\s+(?:vc|você)\s+esqueceu\s+aqui\?/iu;
  const readJSON=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch{return null}};

@@ -1,9 +1,3 @@
-/* GhostSpy V8.9 — Notas visuais ilustrativas no design ORIGINAL.
- * Preserva o HTML/CSS dos dois botoes de Nota existentes e apenas clona
- * as estruturas visuais, trocando imagens/nome/balao. Nenhuma conta real
- * ou Nota privada é apresentada como informação verificada.
- * Este módulo nao faz fetch, nao usa tokens e nao consome creditos.
- */
 (()=>{'use strict';
  const STRIP_ID='gs-notas-borradas';
  const STYLE_ID='gs-notas-borradas-style';

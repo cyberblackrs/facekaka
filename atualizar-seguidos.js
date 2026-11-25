@@ -1,6 +1,3 @@
-/* Garante que o Direct/Feed recebam contas públicas mesmo quando o prefetch da home
- * ainda não terminou. Faz a consulta apenas ao abrir essas telas, sem gastar cota
- * para quem só pesquisa a home. Não inventa perfis e não consulta mensagens privadas. */
 (()=>{'use strict';
  const valid=u=>typeof u==='string'&&/^[A-Za-z0-9._]{1,30}$/.test(u);
  const get=k=>{try{return localStorage.getItem(k)}catch{return null}};

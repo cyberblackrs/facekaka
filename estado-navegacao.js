@@ -1,4 +1,3 @@
-/* Continuidade do perfil consultado e preservação das rotas e conversas existentes. */
 (()=>{'use strict';
  window.dataLayer=window.dataLayer||[];
  const path=location.pathname;

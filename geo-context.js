@@ -1,4 +1,3 @@
-/* Estima apenas a cidade de quem está acessando o site, nunca a de um perfil pesquisado. */
 (()=>{'use strict';
  const apply=(locationData)=>{
    const city=String(locationData?.city||'').trim().slice(0,90);
