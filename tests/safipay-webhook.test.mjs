@@ -13,8 +13,9 @@ import handler from '../api/index.mjs';
 
 const TEST_SECRET = 'test_safipay_webhook_secret_123456';
 
-function sign(body, secret = TEST_SECRET) {
-  return createHmac('sha256', secret).update(body).digest('hex');
+function signV2(body, secret = TEST_SECRET, timestamp = Math.floor(Date.now() / 1000)) {
+  const sig = createHmac('sha256', secret).update(`${timestamp}.${body}`).digest('hex');
+  return `t=${timestamp},v1=${sig}`;
 }
 
 function makeReq({ method = 'POST', url = '/api/index?handler=safipay_webhook', query = { handler: 'safipay_webhook' }, headers = {}, body = '' }) {
@@ -38,14 +39,17 @@ function makeRes() {
   };
 }
 
-test('verifySafiPaySignature valida HMAC-SHA256 corretamente', () => {
+test('verifySafiPaySignature valida HMAC-SHA256 V2 (t=...,v1=...) e rejeita timestamp expirado', () => {
   const payload = JSON.stringify({ event: 'pix.paid', data: { id: 'tx_1' } });
-  const sig = sign(payload);
-  assert.equal(verifySafiPaySignature(payload, sig, TEST_SECRET), true);
-  assert.equal(verifySafiPaySignature(payload, `sha256=${sig.toUpperCase()}`, TEST_SECRET), true);
-  assert.equal(verifySafiPaySignature(payload, '0'.repeat(64), TEST_SECRET), false);
-  assert.equal(verifySafiPaySignature(payload, '', TEST_SECRET), false);
-  assert.equal(verifySafiPaySignature(payload, sig, ''), false);
+  const now = 1700000000;
+  const header = signV2(payload, TEST_SECRET, now);
+  assert.equal(verifySafiPaySignature(payload, header, TEST_SECRET, { nowSeconds: now }), true);
+  assert.equal(verifySafiPaySignature(payload, header.toUpperCase(), TEST_SECRET, { nowSeconds: now }), true);
+  assert.equal(verifySafiPaySignature(payload, `t=${now - 400},v1=${'0'.repeat(64)}`, TEST_SECRET, { nowSeconds: now }), false);
+  assert.equal(verifySafiPaySignature(payload, signV2(payload, TEST_SECRET, now - 301), TEST_SECRET, { nowSeconds: now }), false);
+  assert.equal(verifySafiPaySignature(payload, `t=${now},v1=${'0'.repeat(64)}`, TEST_SECRET, { nowSeconds: now }), false);
+  assert.equal(verifySafiPaySignature(payload, '', TEST_SECRET, { nowSeconds: now }), false);
+  assert.equal(verifySafiPaySignature(payload, header, '', { nowSeconds: now }), false);
 });
 
 test('processSafiPayWebhookPayload evita confirmações duplicadas e ignora outros eventos', () => {
@@ -91,20 +95,12 @@ test('handler /api/webhooks/safipay rejeita assinatura inválida e confirma pix.
     assert.equal(badRes.statusCode, 401);
     assert.equal(defaultPaymentStore.has('tx_invalid'), false);
 
-    // Webhook válido pix.paid (com dados pessoais no payload que NÃO devem ser expostos)
-    const rawValid = JSON.stringify({
-      event: 'pix.paid',
-      data: {
-        id: 'tx_real_777',
-        txid: 'pix_e2e_777',
-        status: 'paid',
-        customer: { name: 'João Silva', email: 'joao@example.com', document: '12345678900' }
-      }
-    });
+    // Webhook válido pix.paid com formatação customizada (rawBody exato) e dados pessoais que NÃO devem vazar
+    const rawValid = '{\n  "event": "pix.paid",\n  "data": {\n    "id": "tx_real_777",\n    "txid": "pix_e2e_777",\n    "status": "paid",\n    "customer": { "name": "João Silva", "email": "joao@example.com", "document": "12345678900" }\n  }\n}';
     const okRes = makeRes();
     await handler(makeReq({
       body: rawValid,
-      headers: { 'X-SafiPay-Signature-V2': sign(rawValid) }
+      headers: { 'X-SafiPay-Signature-V2': signV2(rawValid) }
     }), okRes);
     assert.equal(okRes.statusCode, 200);
     assert.equal(okRes.body.received, true);
@@ -115,7 +111,7 @@ test('handler /api/webhooks/safipay rejeita assinatura inválida e confirma pix.
     const dupRes = makeRes();
     await handler(makeReq({
       body: rawValid,
-      headers: { 'x-safipay-signature-v2': sign(rawValid) }
+      headers: { 'x-safipay-signature-v2': signV2(rawValid) }
     }), dupRes);
     assert.equal(dupRes.statusCode, 200);
     assert.equal(dupRes.body.duplicate, true);

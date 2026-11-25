@@ -44,6 +44,12 @@ async function memo(key,ms,work,{cacheIf=()=>true}={}){
   inflight.set(key,task);return task;
 }
 
+export const config = {
+  api: {
+    bodyParser: false
+  }
+};
+
 const message=e=>String(e?.message||'Não foi possível consultar o serviço.').slice(0,160);
 export default async function handler(req,res){
   const url=new URL(req.url||'/', 'https://app.invalid');
