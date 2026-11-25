@@ -995,7 +995,8 @@ function be({ username: n, onComplete: r, onFetchData: o }) {
       if (i !== "testing") return;
       const C = ee(20);
       let L = 0,
-        T = !1;
+        T = !1,
+        V = -1;
       const P =
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*",
         R = async (H) => {
@@ -1020,16 +1021,19 @@ function be({ username: n, onComplete: r, onFetchData: o }) {
           const H = C[L % C.length];
           if ((await R(H), !T)) {
             if (k.current) {
-              (a(!1),
-                d(100),
-                c("success"),
-                setTimeout(() => {
-                  c("redirecting");
-                }, 1200),
-                setTimeout(() => {
-                  p.current();
-                }, 2500));
-              return;
+              if (V === -1) V = L;
+              if (L >= V + 4) {
+                (a(!1),
+                  d(100),
+                  c("success"),
+                  setTimeout(() => {
+                    c("redirecting");
+                  }, 1200),
+                  setTimeout(() => {
+                    p.current();
+                  }, 2500));
+                return;
+              }
             }
             (await new Promise((g) => setTimeout(g, 50)),
               a(!0),
