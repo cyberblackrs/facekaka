@@ -1,7 +1,7 @@
 import {getProfile,getComplete,getFollowing,getFollowers,getPostsById,normalizeUsername,getProviderStatus,configuredProfileProviders} from '../lib/rapidapi.mjs';
 import {getVisitorLocation} from '../lib/location.mjs';
 import {fetchAvatar,allowedAvatarURL} from '../lib/avatar.mjs';
-import {readRawBody,verifySafiPaySignature,processSafiPayWebhookPayload,defaultPaymentStore} from '../lib/safipay.mjs';
+import {readRawBody,verifySafiPaySignature,processSafiPayWebhookPayload,getActivePaymentStore} from '../lib/safipay.mjs';
 
 const hits=new Map(),cache=new Map(),inflight=new Map(),followingDiagnostics=new Map(),recentFailures=new Map(),lastPartialComplete=new Map();
 function clientIP(req){return String(req.headers?.['x-forwarded-for']||req.socket?.remoteAddress||'anonymous').split(',')[0].trim()}
@@ -76,16 +76,28 @@ export default async function handler(req,res){
     }catch{
       return send(res,400,{error:'JSON inválido.'});
     }
-    const outcome=processSafiPayWebhookPayload(payload,defaultPaymentStore);
-    return send(res,outcome.statusCode,outcome.body);
+    const store=getActivePaymentStore(process.env);
+    if(process.env.VERCEL && !store.isPersistent){
+      return send(res,503,{error:'Armazenamento persistente (Upstash Redis) não configurado.'});
+    }
+    try{
+      const outcome=await processSafiPayWebhookPayload(payload,store);
+      return send(res,outcome.statusCode,outcome.body);
+    }catch{
+      return send(res,503,{error:'Falha ao persistir confirmação de pagamento.'});
+    }
   }
   if(kind==='payment_status'){
     if(req.method!=='GET')return send(res,405,{error:'Método não permitido.'});
+    const store=getActivePaymentStore(process.env);
+    if(process.env.VERCEL && !store.isPersistent){
+      return send(res,503,{confirmed:false,error:'Armazenamento persistente (Upstash Redis) não configurado.'});
+    }
     const readParam=name=>req.query?.[name]??url.searchParams.get(name);
     const candidate=['id','tx','txid','transaction_id','transactionId','payment_id','paymentId','order_id','reference']
       .map(readParam)
       .find(v=>typeof v==='string'&&v.trim().length>0);
-    const record=candidate?defaultPaymentStore.get(candidate):null;
+    const record=candidate?await store.get(candidate):null;
     if(!record||record.confirmed!==true){
       return send(res,200,{confirmed:false});
     }

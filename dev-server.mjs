@@ -16,7 +16,7 @@ function loadEnv(filename) {
   const content=readFileSync(p,'utf8');
   for(const line of content.split(/\r?\n/)) {
     const match=line.match(/^\s*(?:export\s+)?([A-Za-z_][A-Za-z_0-9]*)\s*=\s*(.*?)\s*$/);
-    if(!match || !['RAPIDAPI_KEY','HIKERAPI_KEY','RAPIDAPI_BASIC_HOST','SAFIPAY_WEBHOOK_SECRET'].includes(match[1]) || process.env[match[1]])continue;
+    if(!match || !['RAPIDAPI_KEY','HIKERAPI_KEY','RAPIDAPI_BASIC_HOST','SAFIPAY_WEBHOOK_SECRET','UPSTASH_REDIS_REST_URL','UPSTASH_REDIS_REST_TOKEN','KV_REST_API_URL','KV_REST_API_TOKEN'].includes(match[1]) || process.env[match[1]])continue;
     let value=match[2].trim();
     if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) value=value.slice(1,-1);
     process.env[match[1]]=value;

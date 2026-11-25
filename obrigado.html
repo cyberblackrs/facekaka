@@ -19,6 +19,13 @@
     .next { text-align: left; border-left: 3px solid #0E82F8; padding: 4px 0 4px 16px; }
     .next h2 { margin: 0 0 7px; font-size: 14px; line-height: 1.4; color: #0D54A3; }
     .next p { margin: 0; font-size: 14px; line-height: 1.65; color: #475569; }
+    .verify-form { display: none; margin-top: 16px; text-align: left; }
+    .verify-form.visible { display: block; }
+    .verify-label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+    .verify-row { display: flex; gap: 8px; }
+    .verify-input { flex: 1; min-width: 0; padding: 10px 12px; font-size: 14px; border: 1px solid #CBD5E1; border-radius: 10px; color: #0F172A; background: #fff; font-family: inherit; }
+    .verify-btn { padding: 10px 14px; font-size: 14px; font-weight: 600; border: 0; border-radius: 10px; background: #0E82F8; color: #fff; cursor: pointer; font-family: inherit; white-space: nowrap; }
+    .verify-btn:disabled { opacity: .6; cursor: wait; }
     .note { margin: 26px 0 0; font-size: 12px; line-height: 1.6; color: #64748B; }
     @media (max-width: 420px) { .card { padding: 28px 23px 24px; } }
   </style>
@@ -35,6 +42,13 @@
         <h2 id="next-title">Validação em andamento</h2>
         <p id="next-text">Estamos conferindo a confirmação da sua transação Pix.</p>
       </div>
+      <form class="verify-form" id="verify-form" autocomplete="off">
+        <label class="verify-label" for="tx-input">Informe o ID da transação do seu comprovante Pix</label>
+        <div class="verify-row">
+          <input class="verify-input" id="tx-input" type="text" placeholder="Ex.: txid ou ID da transação" required>
+          <button class="verify-btn" id="verify-btn" type="submit">Validar</button>
+        </div>
+      </form>
     </section>
   </main>
   <script>
@@ -43,20 +57,51 @@
       var intro = document.getElementById('intro');
       var nextTitle = document.getElementById('next-title');
       var nextText = document.getElementById('next-text');
+      var verifyForm = document.getElementById('verify-form');
+      var txInput = document.getElementById('tx-input');
+      var verifyBtn = document.getElementById('verify-btn');
 
       function showConfirmed() {
+        verifyForm.classList.remove('visible');
         heading.textContent = 'Pagamento confirmado!';
         intro.textContent = 'Obrigado pela sua compra.';
-        nextTitle.textContent = 'Próximos passos';
-        nextText.textContent = 'Após a confirmação real do pagamento, acompanhe as instruções de acesso pelo canal informado no pedido.';
+        nextTitle.textContent = 'Acesso ao serviço';
+        nextText.textContent = 'Transação validada. O serviço analisa e exibe exclusivamente informações públicas disponíveis dos perfis consultados, conforme anunciado.';
       }
 
-      function showUnconfirmed() {
+      function showUnconfirmed(customMessage) {
         heading.textContent = 'Pagamento não confirmado';
-        intro.textContent = 'Conclua o pagamento no checkout para liberar o acesso.';
-        nextTitle.textContent = 'Acesso aguardando validação';
-        nextText.textContent = 'Nenhuma transação Pix aprovada foi identificada até o momento.';
+        intro.textContent = customMessage || 'Conclua o pagamento no checkout para liberar o acesso.';
+        nextTitle.textContent = 'Validação necessária';
+        nextText.textContent = 'Nenhuma transação Pix aprovada foi identificada automaticamente. Caso já tenha pago, informe o ID da transação abaixo para validar.';
+        verifyForm.classList.add('visible');
       }
+
+      function queryStatus(id) {
+        return fetch('/api/payment/status?id=' + encodeURIComponent(id), { cache: 'no-store' })
+          .then(function (res) { return res.ok ? res.json() : { confirmed: false }; });
+      }
+
+      verifyForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var val = (txInput.value || '').trim();
+        if (!val) return;
+        verifyBtn.disabled = true;
+        queryStatus(val)
+          .then(function (data) {
+            if (data && data.confirmed === true) {
+              showConfirmed();
+            } else {
+              showUnconfirmed('Transação ainda não confirmada pelo gateway. Aguarde alguns segundos e tente validar novamente.');
+            }
+          })
+          .catch(function () {
+            showUnconfirmed('Não foi possível consultar o status agora. Tente novamente em instantes.');
+          })
+          .finally(function () {
+            verifyBtn.disabled = false;
+          });
+      });
 
       var params = new URLSearchParams(window.location.search);
       var keys = ['tx', 'txid', 'id', 'transaction_id', 'transactionId', 'payment_id', 'paymentId', 'order_id', 'reference'];
@@ -74,13 +119,13 @@
         return;
       }
 
+      txInput.value = txId;
       var attempts = 0;
       var maxAttempts = 4;
 
       function checkStatus() {
         attempts += 1;
-        fetch('/api/payment/status?id=' + encodeURIComponent(txId), { cache: 'no-store' })
-          .then(function (res) { return res.ok ? res.json() : { confirmed: false }; })
+        queryStatus(txId)
           .then(function (data) {
             if (data && data.confirmed === true) {
               showConfirmed();

@@ -6,6 +6,7 @@ import { Readable } from 'node:stream';
 import {
   verifySafiPaySignature,
   createPaymentStore,
+  createUpstashPaymentStore,
   processSafiPayWebhookPayload,
   defaultPaymentStore
 } from '../lib/safipay.mjs';
@@ -52,26 +53,83 @@ test('verifySafiPaySignature valida HMAC-SHA256 V2 (t=...,v1=...) e rejeita time
   assert.equal(verifySafiPaySignature(payload, header, '', { nowSeconds: now }), false);
 });
 
-test('processSafiPayWebhookPayload evita confirmações duplicadas e ignora outros eventos', () => {
-  const store = createPaymentStore({ persist: false });
+test('processSafiPayWebhookPayload evita confirmações duplicadas e ignora outros eventos', async () => {
+  const store = createPaymentStore();
 
-  const created = processSafiPayWebhookPayload({ event: 'pix.created', data: { id: 'tx_dup_1' } }, store);
+  const created = await processSafiPayWebhookPayload({ event: 'pix.created', data: { id: 'tx_dup_1' } }, store);
   assert.equal(created.statusCode, 200);
   assert.equal(created.body.confirmed, false);
   assert.equal(created.body.ignored, true);
-  assert.equal(store.has('tx_dup_1'), false);
+  assert.equal(await store.has('tx_dup_1'), false);
 
-  const first = processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: 'tx_dup_1', txid: 'e2e_999', status: 'paid' } }, store);
+  const first = await processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: 'tx_dup_1', txid: 'e2e_999', status: 'paid' } }, store);
   assert.equal(first.statusCode, 200);
   assert.equal(first.body.confirmed, true);
   assert.equal(first.body.duplicate, false);
-  assert.equal(store.has('tx_dup_1'), true);
-  assert.equal(store.has('e2e_999'), true);
+  assert.equal(await store.has('tx_dup_1'), true);
+  assert.equal(await store.has('e2e_999'), true);
 
-  const second = processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: 'tx_dup_1', txid: 'e2e_999', status: 'paid' } }, store);
+  const second = await processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: 'tx_dup_1', txid: 'e2e_999', status: 'paid' } }, store);
   assert.equal(second.statusCode, 200);
   assert.equal(second.body.confirmed, true);
   assert.equal(second.body.duplicate, true);
+});
+
+test('createUpstashPaymentStore usa SET NX atômico e persiste aliases sem memória temporária', async () => {
+  const redis = new Map();
+  const mockFetch = async (url, opts) => {
+    assert.equal(url, 'https://mock-upstash.upstash.io/pipeline');
+    assert.equal(opts.headers.Authorization, 'Bearer mock-token');
+    const cmds = JSON.parse(opts.body);
+    const out = cmds.map(([cmd, key, val, ...rest]) => {
+      if (cmd === 'GET') return { result: redis.get(key) ?? null };
+      if (cmd === 'SET') {
+        const isNx = rest.includes('NX');
+        if (isNx && redis.has(key)) return { result: null };
+        redis.set(key, val);
+        return { result: 'OK' };
+      }
+      return { result: null };
+    });
+    return { ok: true, json: async () => out };
+  };
+
+  const store = createUpstashPaymentStore({
+    url: 'https://mock-upstash.upstash.io',
+    token: 'mock-token',
+    fetchImpl: mockFetch
+  });
+  assert.equal(store.isPersistent, true);
+
+  const first = await store.confirm('tx_redis_1', ['e2e_redis_1']);
+  assert.equal(first.duplicate, false);
+  assert.equal((await store.get('e2e_redis_1'))?.confirmed, true);
+
+  const dup = await store.confirm('tx_redis_1', ['e2e_redis_1']);
+  assert.equal(dup.duplicate, true);
+});
+
+test('na Vercel sem Upstash configurado retorna 503 em vez de usar memória temporária', async () => {
+  const prevVercel = process.env.VERCEL;
+  const prevUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const prevToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const prevSecret = process.env.SAFIPAY_WEBHOOK_SECRET;
+  process.env.VERCEL = '1';
+  process.env.SAFIPAY_WEBHOOK_SECRET = TEST_SECRET;
+  delete process.env.UPSTASH_REDIS_REST_URL;
+  delete process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  try {
+    const raw = JSON.stringify({ event: 'pix.paid', data: { id: 'tx_no_kv' } });
+    const res = makeRes();
+    await handler(makeReq({ body: raw, headers: { 'X-SafiPay-Signature-V2': signV2(raw) } }), res);
+    assert.equal(res.statusCode, 503);
+  } finally {
+    if (prevVercel === undefined) delete process.env.VERCEL; else process.env.VERCEL = prevVercel;
+    if (prevUrl === undefined) delete process.env.UPSTASH_REDIS_REST_URL; else process.env.UPSTASH_REDIS_REST_URL = prevUrl;
+    if (prevToken === undefined) delete process.env.UPSTASH_REDIS_REST_TOKEN; else process.env.UPSTASH_REDIS_REST_TOKEN = prevToken;
+    if (prevSecret === undefined) delete process.env.SAFIPAY_WEBHOOK_SECRET; else process.env.SAFIPAY_WEBHOOK_SECRET = prevSecret;
+  }
 });
 
 test('handler /api/webhooks/safipay rejeita assinatura inválida e confirma pix.paid válido sem vazar PII', async () => {
@@ -93,7 +151,7 @@ test('handler /api/webhooks/safipay rejeita assinatura inválida e confirma pix.
       headers: { 'x-safipay-signature-v2': 'f'.repeat(64) }
     }), badRes);
     assert.equal(badRes.statusCode, 401);
-    assert.equal(defaultPaymentStore.has('tx_invalid'), false);
+    assert.equal(await defaultPaymentStore.has('tx_invalid'), false);
 
     // Webhook válido pix.paid com formatação customizada (rawBody exato) e dados pessoais que NÃO devem vazar
     const rawValid = '{\n  "event": "pix.paid",\n  "data": {\n    "id": "tx_real_777",\n    "txid": "pix_e2e_777",\n    "status": "paid",\n    "customer": { "name": "João Silva", "email": "joao@example.com", "document": "12345678900" }\n  }\n}';
@@ -151,5 +209,13 @@ test('obrigado.html não exibe pagamento confirmado sem validação e não cont�
   const html = readFileSync(new URL('../obrigado.html', import.meta.url), 'utf8');
   assert.equal(html.includes('<h1 id="heading">Pagamento confirmado!</h1>'), false);
   assert.equal(html.includes('/api/payment/status'), true);
+  assert.equal(html.includes('exclusivamente informações públicas'), true);
   assert.equal(/fbq\s*\(/i.test(html), false);
+});
+
+test('cta-ghost-final.js deixa explícito antes da compra que consulta somente informações públicas', () => {
+  const cta = readFileSync(new URL('../assets/cta-ghost-final.js', import.meta.url), 'utf8');
+  assert.equal(cta.includes('somente informações públicas'), true);
+  assert.equal(cta.includes('Todas as mensagens do direct'), false);
+  assert.equal(cta.includes('incluindo apagadas'), false);
 });
