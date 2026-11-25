@@ -16,7 +16,7 @@ function loadEnv(filename) {
   const content=readFileSync(p,'utf8');
   for(const line of content.split(/\r?\n/)) {
     const match=line.match(/^\s*(?:export\s+)?([A-Za-z_][A-Za-z_0-9]*)\s*=\s*(.*?)\s*$/);
-    if(!match || !['RAPIDAPI_KEY','HIKERAPI_KEY','RAPIDAPI_BASIC_HOST'].includes(match[1]) || process.env[match[1]])continue;
+    if(!match || !['RAPIDAPI_KEY','HIKERAPI_KEY','RAPIDAPI_BASIC_HOST','SAFIPAY_WEBHOOK_SECRET'].includes(match[1]) || process.env[match[1]])continue;
     let value=match[2].trim();
     if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) value=value.slice(1,-1);
     process.env[match[1]]=value;
@@ -61,7 +61,7 @@ const server=createServer(async(req,res)=>{
   if(pathname!==target.pathname){res.statusCode=308;res.setHeader('Location',pathname+target.search);res.setHeader('Cache-Control','no-store');return res.end();}
   if(pathname==='/back-redirect'){res.statusCode=302;res.setHeader('Location','/cta'+target.search);return res.end();}
   if(pathname.startsWith('/api/')){
-    const names={'/api/avatar':'avatar','/api/health':'health','/api/diagnostics':'diagnostics','/api/profile':'profile','/api/location':'location','/api/following':'following','/api/followers':'followers','/api/posts':'posts','/api/proxy/instagram.php':'instagram','/api/proxy/hikerapi.php':'compat','/api/proxy/leads.php':'leads'};
+    const names={'/api/webhooks/safipay':'safipay_webhook','/api/payment/status':'payment_status','/api/avatar':'avatar','/api/health':'health','/api/diagnostics':'diagnostics','/api/profile':'profile','/api/location':'location','/api/following':'following','/api/followers':'followers','/api/posts':'posts','/api/proxy/instagram.php':'instagram','/api/proxy/hikerapi.php':'compat','/api/proxy/leads.php':'leads'};
     const name=names[pathname]||(pathname==='/api/index'?target.searchParams.get('handler'):null);
     if(!name)return respond(res,404,'API desconhecida');
     req.query={...Object.fromEntries(target.searchParams.entries()),handler:name};

@@ -29,13 +29,80 @@
       <div class="symbol" aria-hidden="true">
         <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>
       </div>
-      <h1 id="heading">Pagamento confirmado!</h1>
-      <p class="intro">Obrigado pela sua compra.</p>
+      <h1 id="heading">Verificando pagamento...</h1>
+      <p class="intro" id="intro">Aguardando confirmação do pagamento pelo gateway.</p>
       <div class="next">
-        <h2>Próximos passos</h2>
-        <p>Após a confirmação real do pagamento, acompanhe as instruções de acesso pelo canal informado no pedido.</p>
+        <h2 id="next-title">Validação em andamento</h2>
+        <p id="next-text">Estamos conferindo a confirmação da sua transação Pix.</p>
       </div>
     </section>
   </main>
+  <script>
+    (function () {
+      var heading = document.getElementById('heading');
+      var intro = document.getElementById('intro');
+      var nextTitle = document.getElementById('next-title');
+      var nextText = document.getElementById('next-text');
+
+      function showConfirmed() {
+        heading.textContent = 'Pagamento confirmado!';
+        intro.textContent = 'Obrigado pela sua compra.';
+        nextTitle.textContent = 'Próximos passos';
+        nextText.textContent = 'Após a confirmação real do pagamento, acompanhe as instruções de acesso pelo canal informado no pedido.';
+      }
+
+      function showUnconfirmed() {
+        heading.textContent = 'Pagamento não confirmado';
+        intro.textContent = 'Conclua o pagamento no checkout para liberar o acesso.';
+        nextTitle.textContent = 'Acesso aguardando validação';
+        nextText.textContent = 'Nenhuma transação Pix aprovada foi identificada até o momento.';
+      }
+
+      var params = new URLSearchParams(window.location.search);
+      var keys = ['tx', 'txid', 'id', 'transaction_id', 'transactionId', 'payment_id', 'paymentId', 'order_id', 'reference'];
+      var txId = '';
+      for (var i = 0; i < keys.length; i++) {
+        var val = params.get(keys[i]);
+        if (val && val.trim()) {
+          txId = val.trim();
+          break;
+        }
+      }
+
+      if (!txId) {
+        showUnconfirmed();
+        return;
+      }
+
+      var attempts = 0;
+      var maxAttempts = 4;
+
+      function checkStatus() {
+        attempts += 1;
+        fetch('/api/payment/status?id=' + encodeURIComponent(txId), { cache: 'no-store' })
+          .then(function (res) { return res.ok ? res.json() : { confirmed: false }; })
+          .then(function (data) {
+            if (data && data.confirmed === true) {
+              showConfirmed();
+              return;
+            }
+            if (attempts < maxAttempts) {
+              setTimeout(checkStatus, 2000);
+            } else {
+              showUnconfirmed();
+            }
+          })
+          .catch(function () {
+            if (attempts < maxAttempts) {
+              setTimeout(checkStatus, 2000);
+            } else {
+              showUnconfirmed();
+            }
+          });
+      }
+
+      checkStatus();
+    })();
+  </script>
 </body>
 </html>

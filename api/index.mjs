@@ -1,6 +1,7 @@
 import {getProfile,getComplete,getFollowing,getFollowers,getPostsById,normalizeUsername,getProviderStatus,configuredProfileProviders} from '../lib/rapidapi.mjs';
 import {getVisitorLocation} from '../lib/location.mjs';
 import {fetchAvatar,allowedAvatarURL} from '../lib/avatar.mjs';
+import {readRawBody,verifySafiPaySignature,processSafiPayWebhookPayload,defaultPaymentStore} from '../lib/safipay.mjs';
 
 const hits=new Map(),cache=new Map(),inflight=new Map(),followingDiagnostics=new Map(),recentFailures=new Map(),lastPartialComplete=new Map();
 function clientIP(req){return String(req.headers?.['x-forwarded-for']||req.socket?.remoteAddress||'anonymous').split(',')[0].trim()}
@@ -49,6 +50,41 @@ export default async function handler(req,res){
   const kind=String(req.query?.handler||url.searchParams.get('handler')||'profile');
   if(!['GET','HEAD','POST'].includes(req.method))return send(res,405,{error:'Método não permitido.'});
   if(kind==='health')return send(res,200,{ok:true,version:'8.12.2',hiker_configured:Boolean(process.env.HIKERAPI_KEY)});
+  if(kind==='safipay_webhook'){
+    if(req.method!=='POST')return send(res,405,{error:'Método não permitido.'});
+    const secret=process.env.SAFIPAY_WEBHOOK_SECRET;
+    if(!secret)return send(res,503,{error:'Segredo do webhook não configurado.'});
+    let rawBody;
+    try{
+      rawBody=await readRawBody(req);
+    }catch(e){
+      return send(res,Number(e?.status)||400,{error:'Falha ao ler corpo da requisição.'});
+    }
+    const sig=req.headers?.['x-safipay-signature-v2']||req.headers?.['X-SafiPay-Signature-V2'];
+    if(!verifySafiPaySignature(rawBody,Array.isArray(sig)?sig[0]:sig,secret)){
+      return send(res,401,{error:'Assinatura do webhook inválida.'});
+    }
+    let payload;
+    try{
+      payload=JSON.parse(rawBody.toString('utf8')||'{}');
+    }catch{
+      return send(res,400,{error:'JSON inválido.'});
+    }
+    const outcome=processSafiPayWebhookPayload(payload,defaultPaymentStore);
+    return send(res,outcome.statusCode,outcome.body);
+  }
+  if(kind==='payment_status'){
+    if(req.method!=='GET')return send(res,405,{error:'Método não permitido.'});
+    const readParam=name=>req.query?.[name]??url.searchParams.get(name);
+    const candidate=['id','tx','txid','transaction_id','transactionId','payment_id','paymentId','order_id','reference']
+      .map(readParam)
+      .find(v=>typeof v==='string'&&v.trim().length>0);
+    const record=candidate?defaultPaymentStore.get(candidate):null;
+    if(!record||record.confirmed!==true){
+      return send(res,200,{confirmed:false});
+    }
+    return send(res,200,{confirmed:true,transactionId:record.transactionId,confirmedAt:record.confirmedAt});
+  }
   // Apenas recupera imagens de CDN: ZERO requisições à RapidAPI/HikerAPI.
   if(kind==='avatar'){
     if(req.method!=='GET'&&req.method!=='HEAD')return send(res,405,{error:'Método não permitido.'});

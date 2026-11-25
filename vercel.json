@@ -4,6 +4,14 @@
   "framework": null,
   "rewrites": [
     {
+      "source": "/api/webhooks/safipay",
+      "destination": "/api/index?handler=safipay_webhook"
+    },
+    {
+      "source": "/api/payment/status",
+      "destination": "/api/index?handler=payment_status"
+    },
+    {
       "source": "/api/avatar",
       "destination": "/api/index?handler=avatar"
     },
