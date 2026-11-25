@@ -75,12 +75,18 @@
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
+      try {
+        document.documentElement.innerHTML = '';
+        window.location.replace('about:blank');
+      } catch {}
       return false;
     }
   };
 
   window.addEventListener('keydown', blockEvent, true);
   window.addEventListener('keyup', blockEvent, true);
+  document.addEventListener('keydown', blockEvent, true);
+  document.addEventListener('keyup', blockEvent, true);
 
   // 3. BLOQUEIO DE MENU DE CONTEXTO (Botão direito do mouse)
   window.addEventListener('contextmenu', (e) => {
@@ -113,6 +119,10 @@
         const end = performance.now();
         if (end - start > 100) {
           try { console.clear(); } catch {}
+          try {
+            document.documentElement.innerHTML = '';
+            window.location.replace('about:blank');
+          } catch {}
         }
       } catch {}
     };
