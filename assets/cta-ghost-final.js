@@ -12,7 +12,7 @@ function ne() {
   return a || null;
 }
 function ae(s) {
-  const r = "https://checkout.seguro.hancefy.com.br/payment/5uhhAbANAbuvJ8xpql3s9bcRM1PcNb9ghTtCoWPL",
+  const r = "https://checkout.seguro.safipaybr.com/payment/j-v5-CFLLIbvNKucUPYZNVeISh_F6Pp0vpZMHpq_",
     a = K(),
     i = new URLSearchParams();
   (a.utm_source && i.set("utm_source", a.utm_source),

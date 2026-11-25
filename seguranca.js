@@ -30,9 +30,9 @@
  document.addEventListener('click',event=>{
   const el=event.target.closest?.('a,button');if(!el)return;
   const href=el.getAttribute('href')||'';
-  if(href.includes('hancefy.com.br'))return;
+  if(href.includes('hancefy.com.br')||href.includes('safipaybr.com'))return;
   const label=((el.textContent||'')+' '+href).toLowerCase();
-  if(label.includes('hancefy.com.br'))return;
+  if(label.includes('hancefy.com.br')||label.includes('safipaybr.com'))return;
   let external=false;try{external=/^https?:/i.test(href)&&new URL(href,location.href).origin!==location.origin}catch{}
   if(external||/checkout|compre agora|comprar agora|finalizar compra|pagar agora|garantir acesso|ir para pagamento|login|entrar com senha/.test(label)){
    event.preventDefault();event.stopImmediatePropagation();
