@@ -7,6 +7,18 @@
   <meta name="theme-color" content="#F8FAFC">
   <title>Pagamento Confirmado</title>
   <link rel="stylesheet" href="/obrigado.css">
+  <!-- Meta Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0; t.src = v;
+      s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1038848405916345');
+  </script>
   <style>
     * { box-sizing: border-box; }
     :root { color-scheme: light; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; color: #0F172A; background: #F8FAFC; }
@@ -61,12 +73,62 @@
       var txInput = document.getElementById('tx-input');
       var verifyBtn = document.getElementById('verify-btn');
 
-      function showConfirmed() {
+      var purchaseTracked = false;
+
+      function getStorageKey(id) {
+        return 'gs_purchase_tracked_' + String(id || '').trim();
+      }
+
+      function hasTrackedPurchase(id) {
+        if (purchaseTracked) return true;
+        var key = getStorageKey(id);
+        try {
+          if (window.localStorage && window.localStorage.getItem(key) === '1') return true;
+        } catch {}
+        try {
+          if (window.sessionStorage && window.sessionStorage.getItem(key) === '1') return true;
+        } catch {}
+        return false;
+      }
+
+      function markPurchaseTracked(id) {
+        purchaseTracked = true;
+        var key = getStorageKey(id);
+        try {
+          if (window.localStorage) window.localStorage.setItem(key, '1');
+        } catch {}
+        try {
+          if (window.sessionStorage) window.sessionStorage.setItem(key, '1');
+        } catch {}
+      }
+
+      function trackConfirmedPurchase(data) {
+        var confirmedId = String((data && data.transactionId) || txId || '').trim();
+        if (!confirmedId || !data || data.confirmed !== true) return;
+        if (hasTrackedPurchase(confirmedId)) return;
+        markPurchaseTracked(confirmedId);
+
+        var numericValue = Number(data.value);
+        var purchaseValue = Number.isFinite(numericValue) && numericValue > 0 ? Math.round(numericValue * 100) / 100 : 47;
+        var currency = String(data.currency || 'BRL').toUpperCase();
+
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'Purchase', {
+            value: purchaseValue,
+            currency: currency
+          }, {
+            eventID: 'purchase_' + confirmedId
+          });
+        }
+      }
+
+      function showConfirmed(data) {
         verifyForm.classList.remove('visible');
         heading.textContent = 'Pagamento confirmado!';
         intro.textContent = 'Obrigado pela sua compra.';
         nextTitle.textContent = 'Acesso ao serviço';
         nextText.textContent = 'Transação validada. O serviço analisa e exibe exclusivamente informações públicas disponíveis dos perfis consultados, conforme anunciado.';
+        trackConfirmedPurchase(data);
       }
 
       function showUnconfirmed(customMessage) {
@@ -90,7 +152,8 @@
         queryStatus(val)
           .then(function (data) {
             if (data && data.confirmed === true) {
-              showConfirmed();
+              txId = String(data.transactionId || val).trim();
+              showConfirmed(data);
             } else {
               showUnconfirmed('Transação ainda não confirmada pelo gateway. Aguarde alguns segundos e tente validar novamente.');
             }
@@ -128,7 +191,7 @@
         queryStatus(txId)
           .then(function (data) {
             if (data && data.confirmed === true) {
-              showConfirmed();
+              showConfirmed(data);
               return;
             }
             if (attempts < maxAttempts) {

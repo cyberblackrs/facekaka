@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { Readable } from 'node:stream';
+import vm from 'node:vm';
 import {
   verifySafiPaySignature,
   createPaymentStore,
@@ -235,10 +236,107 @@ test('handler /api/webhooks/safipay rejeita assinatura inválida e confirma pix.
   }
 });
 
-test('obrigado.html não exibe pagamento confirmado sem validação e não contém Pixel', () => {
+test('obrigado.html não exibe pagamento confirmado sem validação e registra Purchase apenas após confirmação real, em BRL e sem duplicidade', async () => {
   const html = readFileSync(new URL('../obrigado.html', import.meta.url), 'utf8');
   assert.equal(html.includes('<h1 id="heading">Pagamento confirmado!</h1>'), false);
   assert.equal(html.includes('/api/payment/status'), true);
   assert.equal(html.includes('exclusivamente informações públicas'), true);
-  assert.equal(/fbq\s*\(/i.test(html), false);
+
+  // Extrai o script de validação/rastreamento de obrigado.html e executa em sandbox isolada (sem enviar nada ao Pixel de produção)
+  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+  assert.equal(scripts.length, 2);
+  const trackingScript = scripts[1];
+
+  function createStorage() {
+    const map = new Map();
+    return {
+      getItem: k => (map.has(k) ? map.get(k) : null),
+      setItem: (k, v) => map.set(k, String(v))
+    };
+  }
+
+  function runObrigado({ search = '', fetchImpl, localStorage = createStorage(), sessionStorage = createStorage() }) {
+    const fbqCalls = [];
+    const elements = {
+      heading: { textContent: '' },
+      intro: { textContent: '' },
+      'next-title': { textContent: '' },
+      'next-text': { textContent: '' },
+      'verify-form': { classList: { add() {}, remove() {} }, addEventListener() {} },
+      'tx-input': { value: '' },
+      'verify-btn': { disabled: false }
+    };
+    const fbq = (...args) => fbqCalls.push(args);
+    const windowObj = {
+      location: { search },
+      localStorage,
+      sessionStorage,
+      fbq
+    };
+    const context = {
+      window: windowObj,
+      document: { getElementById: id => elements[id] },
+      URLSearchParams,
+      fetch: fetchImpl,
+      fbq,
+      setTimeout: (fn) => fn(),
+      encodeURIComponent
+    };
+    vm.runInNewContext(trackingScript, context);
+    return { fbqCalls, elements, localStorage, sessionStorage };
+  }
+
+  // 1. Acesso sem ID -> NÃO dispara Purchase
+  const noId = runObrigado({
+    search: '',
+    fetchImpl: async () => { throw new Error('não deveria chamar fetch sem ID'); }
+  });
+  await new Promise(r => setTimeout(r, 10));
+  assert.equal(noId.fbqCalls.length, 0);
+  assert.equal(noId.elements.heading.textContent, 'Pagamento não confirmado');
+
+  // 2. Acesso com ID pendente/não confirmado -> NÃO dispara Purchase
+  const unconfirmed = runObrigado({
+    search: '?id=tx_pending_sandbox',
+    fetchImpl: async () => ({ ok: true, json: async () => ({ confirmed: false }) })
+  });
+  await new Promise(r => setTimeout(r, 20));
+  assert.equal(unconfirmed.fbqCalls.length, 0);
+  assert.equal(unconfirmed.elements.heading.textContent, 'Pagamento não confirmado');
+
+  // 3. Acesso com pagamento real confirmado -> dispara Purchase 1x com value em BRL e eventID
+  const sharedLocalStorage = createStorage();
+  const sharedSessionStorage = createStorage();
+  const confirmed = runObrigado({
+    search: '?id=tx_real_brl_47',
+    localStorage: sharedLocalStorage,
+    sessionStorage: sharedSessionStorage,
+    fetchImpl: async () => ({
+      ok: true,
+      json: async () => ({ confirmed: true, transactionId: 'tx_real_brl_47', value: 47, currency: 'BRL' })
+    })
+  });
+  await new Promise(r => setTimeout(r, 20));
+  assert.equal(confirmed.elements.heading.textContent, 'Pagamento confirmado!');
+  assert.equal(confirmed.fbqCalls.length, 1);
+  assert.deepEqual(JSON.parse(JSON.stringify(confirmed.fbqCalls[0])), [
+    'track',
+    'Purchase',
+    { value: 47, currency: 'BRL' },
+    { eventID: 'purchase_tx_real_brl_47' }
+  ]);
+
+  // 4. Refresh na página com o mesmo ID -> proteção contra duplicidade impede segundo Purchase
+  const refreshed = runObrigado({
+    search: '?id=tx_real_brl_47',
+    localStorage: sharedLocalStorage,
+    sessionStorage: sharedSessionStorage,
+    fetchImpl: async () => ({
+      ok: true,
+      json: async () => ({ confirmed: true, transactionId: 'tx_real_brl_47', value: 47, currency: 'BRL' })
+    })
+  });
+  await new Promise(r => setTimeout(r, 20));
+  assert.equal(refreshed.elements.heading.textContent, 'Pagamento confirmado!');
+  assert.equal(refreshed.fbqCalls.length, 0);
 });

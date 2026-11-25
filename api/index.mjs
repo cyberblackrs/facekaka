@@ -120,7 +120,13 @@ export default async function handler(req,res){
       if(!record||record.confirmed!==true){
         return send(res,200,{confirmed:false});
       }
-      return send(res,200,{confirmed:true,transactionId:record.transactionId,confirmedAt:record.confirmedAt});
+      return send(res,200,{
+        confirmed:true,
+        transactionId:record.transactionId,
+        confirmedAt:record.confirmedAt,
+        value:typeof record.amountBRL==='number'&&Number.isFinite(record.amountBRL)&&record.amountBRL>0?record.amountBRL:47,
+        currency:record.currency||'BRL'
+      });
     }catch{
       return send(res,503,{confirmed:false,error:'Falha temporária ao consultar confirmação.'});
     }
