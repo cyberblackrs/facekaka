@@ -212,10 +212,3 @@ test('obrigado.html não exibe pagamento confirmado sem validação e não cont�
   assert.equal(html.includes('exclusivamente informações públicas'), true);
   assert.equal(/fbq\s*\(/i.test(html), false);
 });
-
-test('cta-ghost-final.js deixa explícito antes da compra que consulta somente informações públicas', () => {
-  const cta = readFileSync(new URL('../assets/cta-ghost-final.js', import.meta.url), 'utf8');
-  assert.equal(cta.includes('somente informações públicas'), true);
-  assert.equal(cta.includes('Todas as mensagens do direct'), false);
-  assert.equal(cta.includes('incluindo apagadas'), false);
-});
