@@ -1,4 +1,3 @@
-
 /* ==========================================================================
    GhostSpy Theme - High-End Red & Clean White
    Strictly Scoped to Offer Components (Home, CTA, Quiz, Upsells, Back-Redirect)
@@ -467,11 +466,15 @@
   color: #0F172A !important;
 }
 
-.title-dpgm, .main-title-firewall, .titulo-medio, .titulo-medio-grande {
+.title-dpgm,
+.main-title-firewall,
+.titulo-medio,
+.titulo-medio-grande {
   color: #0F172A !important;
 }
 
-.subtitle-firewall, .subtitle-dpgm {
+.subtitle-firewall,
+.subtitle-dpgm {
   color: #475569 !important;
 }
 
@@ -505,7 +508,10 @@
   color: #FFFFFF !important;
 }
 
-.badge-dpgm, .badge-primary, .badge-diamond, .badge-premium {
+.badge-dpgm,
+.badge-primary,
+.badge-diamond,
+.badge-premium {
   background: #EFF6FF !important;
   color: #0E82F8 !important;
   border: 1px solid #BFDBFE !important;
@@ -566,7 +572,8 @@
   border-top: 1px solid #E2E8F0 !important;
 }
 
-.footer-text, .footer-link {
+.footer-text,
+.footer-link {
   color: #64748B !important;
 }
 
