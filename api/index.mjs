@@ -55,7 +55,21 @@ export default async function handler(req,res){
   const url=new URL(req.url||'/', 'https://app.invalid');
   const kind=String(req.query?.handler||url.searchParams.get('handler')||'profile');
   if(!['GET','HEAD','POST'].includes(req.method))return send(res,405,{error:'Método não permitido.'});
-  if(kind==='health')return send(res,200,{ok:true,version:'8.12.2',hiker_configured:Boolean(process.env.HIKERAPI_KEY)});
+  if(kind==='health'){
+    const store=getActivePaymentStore(process.env);
+    let redis_ok=null;
+    if(url.searchParams.get('ping')==='redis' && store.isPersistent && typeof store.ping==='function'){
+      try{redis_ok=await store.ping();}catch{redis_ok=false;}
+    }
+    return send(res,200,{
+      ok:true,
+      version:'8.12.2',
+      hiker_configured:Boolean(process.env.HIKERAPI_KEY),
+      safipay_webhook_configured:Boolean(process.env.SAFIPAY_WEBHOOK_SECRET),
+      payment_persistence_configured:Boolean(store.isPersistent),
+      ...(redis_ok!==null?{redis_ok}:{})
+    });
+  }
   if(kind==='safipay_webhook'){
     if(req.method!=='POST')return send(res,405,{error:'Método não permitido.'});
     const secret=process.env.SAFIPAY_WEBHOOK_SECRET;
@@ -89,6 +103,10 @@ export default async function handler(req,res){
   }
   if(kind==='payment_status'){
     if(req.method!=='GET')return send(res,405,{error:'Método não permitido.'});
+    if(!checkRate(req)){
+      res.setHeader('Retry-After','60');
+      return send(res,429,{confirmed:false,error:'Muitas consultas em sequência. Aguarde um minuto.'});
+    }
     const store=getActivePaymentStore(process.env);
     if(process.env.VERCEL && !store.isPersistent){
       return send(res,503,{confirmed:false,error:'Armazenamento persistente (Upstash Redis) não configurado.'});
@@ -96,12 +114,16 @@ export default async function handler(req,res){
     const readParam=name=>req.query?.[name]??url.searchParams.get(name);
     const candidate=['id','tx','txid','transaction_id','transactionId','payment_id','paymentId','order_id','reference']
       .map(readParam)
-      .find(v=>typeof v==='string'&&v.trim().length>0);
-    const record=candidate?await store.get(candidate):null;
-    if(!record||record.confirmed!==true){
-      return send(res,200,{confirmed:false});
+      .find(v=>typeof v==='string'&&v.trim().length>=4&&v.trim().length<=160);
+    try{
+      const record=candidate?await store.get(candidate):null;
+      if(!record||record.confirmed!==true){
+        return send(res,200,{confirmed:false});
+      }
+      return send(res,200,{confirmed:true,transactionId:record.transactionId,confirmedAt:record.confirmedAt});
+    }catch{
+      return send(res,503,{confirmed:false,error:'Falha temporária ao consultar confirmação.'});
     }
-    return send(res,200,{confirmed:true,transactionId:record.transactionId,confirmedAt:record.confirmedAt});
   }
   // Apenas recupera imagens de CDN: ZERO requisições à RapidAPI/HikerAPI.
   if(kind==='avatar'){

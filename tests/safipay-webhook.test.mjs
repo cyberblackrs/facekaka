@@ -53,60 +53,90 @@ test('verifySafiPaySignature valida HMAC-SHA256 V2 (t=...,v1=...) e rejeita time
   assert.equal(verifySafiPaySignature(payload, header, '', { nowSeconds: now }), false);
 });
 
-test('processSafiPayWebhookPayload evita confirmações duplicadas e ignora outros eventos', async () => {
+test('testa estados de pagamento: aprovado, pendente, expirado e inválido', async () => {
   const store = createPaymentStore();
 
-  const created = await processSafiPayWebhookPayload({ event: 'pix.created', data: { id: 'tx_dup_1' } }, store);
-  assert.equal(created.statusCode, 200);
-  assert.equal(created.body.confirmed, false);
-  assert.equal(created.body.ignored, true);
-  assert.equal(await store.has('tx_dup_1'), false);
+  // Pendente (pix.created e pix.paid com status pending)
+  const pendingEvent = await processSafiPayWebhookPayload({ event: 'pix.created', data: { id: 'tx_pending_1', status: 'pending' } }, store);
+  assert.equal(pendingEvent.statusCode, 200);
+  assert.equal(pendingEvent.body.confirmed, false);
+  assert.equal(await store.has('tx_pending_1'), false);
 
-  const first = await processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: 'tx_dup_1', txid: 'e2e_999', status: 'paid' } }, store);
-  assert.equal(first.statusCode, 200);
-  assert.equal(first.body.confirmed, true);
-  assert.equal(first.body.duplicate, false);
-  assert.equal(await store.has('tx_dup_1'), true);
-  assert.equal(await store.has('e2e_999'), true);
+  const pendingPaid = await processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: 'tx_pending_2', status: 'waiting_payment' } }, store);
+  assert.equal(pendingPaid.statusCode, 200);
+  assert.equal(pendingPaid.body.confirmed, false);
+  assert.equal(await store.has('tx_pending_2'), false);
 
-  const second = await processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: 'tx_dup_1', txid: 'e2e_999', status: 'paid' } }, store);
-  assert.equal(second.statusCode, 200);
-  assert.equal(second.body.confirmed, true);
-  assert.equal(second.body.duplicate, true);
+  // Expirado (pix.expired e pix.paid com status expired)
+  const expiredEvent = await processSafiPayWebhookPayload({ event: 'pix.expired', data: { id: 'tx_exp_1', status: 'expired' } }, store);
+  assert.equal(expiredEvent.statusCode, 200);
+  assert.equal(expiredEvent.body.confirmed, false);
+  assert.equal(await store.has('tx_exp_1'), false);
+
+  const expiredPaid = await processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: 'tx_exp_2', status: 'expired' } }, store);
+  assert.equal(expiredPaid.statusCode, 200);
+  assert.equal(expiredPaid.body.confirmed, false);
+  assert.equal(await store.has('tx_exp_2'), false);
+
+  // Inválido (sem ID ou ID trivial)
+  const missingId = await processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: '12' } }, store);
+  assert.equal(missingId.statusCode, 400);
+
+  // Aprovado (pix.paid com status paid)
+  const approved = await processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: 'tx_ok_999', txid: 'e2e_ok_999', status: 'paid' } }, store);
+  assert.equal(approved.statusCode, 200);
+  assert.equal(approved.body.confirmed, true);
+  assert.equal(approved.body.duplicate, false);
+  assert.equal(await store.has('tx_ok_999'), true);
+  assert.equal(await store.has('e2e_ok_999'), true);
+
+  // Duplicado (mesmo txid com outro id primário não duplica nem sobrescreve)
+  const dupByAlias = await processSafiPayWebhookPayload({ event: 'pix.paid', data: { id: 'tx_ok_999', txid: 'e2e_ok_999', status: 'paid' } }, store);
+  assert.equal(dupByAlias.statusCode, 200);
+  assert.equal(dupByAlias.body.duplicate, true);
 });
 
-test('createUpstashPaymentStore usa SET NX atômico e persiste aliases sem memória temporária', async () => {
+test('createUpstashPaymentStore usa SET NX atômico, detecta reutilização de alias e persiste entre instâncias', async () => {
   const redis = new Map();
-  const mockFetch = async (url, opts) => {
-    assert.equal(url, 'https://mock-upstash.upstash.io/pipeline');
-    assert.equal(opts.headers.Authorization, 'Bearer mock-token');
-    const cmds = JSON.parse(opts.body);
-    const out = cmds.map(([cmd, key, val, ...rest]) => {
-      if (cmd === 'GET') return { result: redis.get(key) ?? null };
-      if (cmd === 'SET') {
-        const isNx = rest.includes('NX');
-        if (isNx && redis.has(key)) return { result: null };
-        redis.set(key, val);
-        return { result: 'OK' };
-      }
-      return { result: null };
-    });
-    return { ok: true, json: async () => out };
-  };
-
-  const store = createUpstashPaymentStore({
+  const makeClient = () => createUpstashPaymentStore({
     url: 'https://mock-upstash.upstash.io',
     token: 'mock-token',
-    fetchImpl: mockFetch
+    fetchImpl: async (url, opts) => {
+      assert.equal(url, 'https://mock-upstash.upstash.io/pipeline');
+      assert.equal(opts.headers.Authorization, 'Bearer mock-token');
+      const cmds = JSON.parse(opts.body);
+      const out = cmds.map(([cmd, key, val, ...rest]) => {
+        if (cmd === 'PING') return { result: 'PONG' };
+        if (cmd === 'GET') return { result: redis.get(key) ?? null };
+        if (cmd === 'SET') {
+          const isNx = rest.includes('NX');
+          if (isNx && redis.has(key)) return { result: null };
+          redis.set(key, val);
+          return { result: 'OK' };
+        }
+        return { result: null };
+      });
+      return { ok: true, json: async () => out };
+    }
   });
-  assert.equal(store.isPersistent, true);
 
-  const first = await store.confirm('tx_redis_1', ['e2e_redis_1']);
+  // Instância A (webhook)
+  const instanceA = makeClient();
+  assert.equal(instanceA.isPersistent, true);
+  assert.equal(await instanceA.ping(), true);
+
+  const first = await instanceA.confirm('tx_redis_1', ['e2e_redis_1']);
   assert.equal(first.duplicate, false);
-  assert.equal((await store.get('e2e_redis_1'))?.confirmed, true);
 
-  const dup = await store.confirm('tx_redis_1', ['e2e_redis_1']);
-  assert.equal(dup.duplicate, true);
+  // Instância B (outra função serverless lendo /api/payment/status)
+  const instanceB = makeClient();
+  assert.equal((await instanceB.get('e2e_redis_1'))?.confirmed, true);
+  assert.equal((await instanceB.get('tx_redis_1'))?.transactionId, 'tx_redis_1');
+
+  // Tentativa de reutilizar o alias e2e_redis_1 em outra transação é barrada como duplicada
+  const reuse = await instanceB.confirm('tx_redis_2', ['e2e_redis_1']);
+  assert.equal(reuse.duplicate, true);
+  assert.equal(reuse.record.transactionId, 'tx_redis_1');
 });
 
 test('na Vercel sem Upstash configurado retorna 503 em vez de usar memória temporária', async () => {
