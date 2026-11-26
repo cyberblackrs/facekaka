@@ -1665,17 +1665,17 @@ const xe = H(function () {
       : l;
   n.useEffect(() => {
     if (!N || syncStep >= 3) return;
-    const t1 = setTimeout(() => setSyncStep(1), 700);
-    const t2 = setTimeout(() => setSyncStep(2), 1450);
+    const t1 = setTimeout(() => setSyncStep(1), 750);
+    const t2 = setTimeout(() => setSyncStep(2), 1600);
     const t3 = setTimeout(() => {
       setSyncStep(3);
       try {
         const tgt = (c || u?.username || "perfil").toLowerCase();
         sessionStorage.setItem(`gs_dm_loaded_${tgt}`, "1");
       } catch {}
-    }, 2200);
+    }, 2400);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [N, syncStep, c, u]);
+  }, [N]);
   return N
     ? e.jsxs("div", {
       className: "dm-screen",
