@@ -1613,19 +1613,29 @@ const xe = H(function () {
           b("desbloquear essa conversa");
           return;
         }
-        p.isClickable &&
-          p.chatIndex &&
-          (ne(p.id),
-            a((w) => w.map((x) => (x.id === p.id ? { ...x, isUnread: !1 } : x))),
-            sessionStorage.setItem(
-              `chat-${p.chatIndex}-user-name`,
-              p.displayName,
-            ),
-            sessionStorage.setItem(
-              `chat-${p.chatIndex}-user-photo`,
-              p.profilePic,
-            ),
-            s(`/chat/${p.chatIndex}`));
+        if (p.isClickable && p.chatIndex) {
+          const isUnlocked =
+            typeof localStorage < "u" && localStorage.getItem("gs_msg_unlocked") === "1";
+          if (!isUnlocked) {
+            try {
+              const raw = sessionStorage.getItem("gs_preview_chats_opened") || "[]";
+              const opened = JSON.parse(raw);
+              if (!opened.includes(p.id)) {
+                if (opened.length >= 2) {
+                  b("desbloquear mais conversas");
+                  return;
+                }
+                opened.push(p.id);
+                sessionStorage.setItem("gs_preview_chats_opened", JSON.stringify(opened));
+              }
+            } catch {}
+          }
+          ne(p.id);
+          a((w) => w.map((x) => (x.id === p.id ? { ...x, isUnread: !1 } : x)));
+          sessionStorage.setItem(`chat-${p.chatIndex}-user-name`, p.displayName);
+          sessionStorage.setItem(`chat-${p.chatIndex}-user-photo`, p.profilePic);
+          s(`/chat/${p.chatIndex}`);
+        }
       },
       [b, s],
     ),
@@ -1644,6 +1654,7 @@ const xe = H(function () {
     }, [i]),
     [dmQuery, setDmQuery] = n.useState(""),
     [dmFilter, setDmFilter] = n.useState("all"),
+    [liveMediaAlert, setLiveMediaAlert] = n.useState(!1),
     [syncStep, setSyncStep] = n.useState(() => {
       try {
         const tgt = r || localStorage.getItem("username") || localStorage.getItem("espionado_username") || "perfil";
@@ -1676,6 +1687,11 @@ const xe = H(function () {
     }, 2400);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [N]);
+  n.useEffect(() => {
+    if (!N || dmUnlocked) return;
+    const tAlert = setTimeout(() => setLiveMediaAlert(!0), 18000);
+    return () => clearTimeout(tAlert);
+  }, [N, dmUnlocked]);
   return N
     ? e.jsxs("div", {
       className: "dm-screen",
@@ -1796,6 +1812,33 @@ const xe = H(function () {
                       children: `${targetStats.msgCount} mensagens • ${targetStats.audioCount} áudios • ${targetStats.mediaCount} mídias`,
                     }),
                   ],
+                }),
+              ],
+            }),
+            liveMediaAlert &&
+            !dmUnlocked &&
+            e.jsxs("div", {
+              onClick: F,
+              style: {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "8px",
+                margin: "8px 16px 0",
+                padding: "9px 12px",
+                borderRadius: "10px",
+                background: "rgba(239, 68, 68, 0.12)",
+                border: "1px solid rgba(239, 68, 68, 0.32)",
+                cursor: "pointer",
+              },
+              children: [
+                e.jsx("span", {
+                  style: { color: "#fca5a5", fontSize: "12px", fontWeight: 600 },
+                  children: "● Nova mídia temporária detectada • expira em breve",
+                }),
+                e.jsx("span", {
+                  style: { color: "#0095f6", fontSize: "12px", fontWeight: 700, whiteSpace: "nowrap" },
+                  children: "Ver →",
                 }),
               ],
             }),
