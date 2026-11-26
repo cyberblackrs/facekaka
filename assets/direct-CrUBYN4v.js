@@ -1211,6 +1211,39 @@ function le(t, i) {
         isClickable: !0,
         chatIndex: 3,
       },
+      {
+        id: "chat_20",
+        displayName: I(t[2]?.username || "ju.silva"),
+        profilePic:
+          t[2]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+        lastMessage: "Aparece lá",
+        time: " • 1 d",
+        isUnread: !0,
+        isClickable: !0,
+        chatIndex: 6,
+      },
+      {
+        id: "chat_21",
+        displayName: I(t[3]?.username || "camila_r"),
+        profilePic:
+          t[3]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+        lastMessage: "Responde pelo amor de Deus",
+        time: " • 1 d",
+        isUnread: !0,
+        isClickable: !0,
+        chatIndex: 7,
+      },
+      {
+        id: "chat_22",
+        displayName: I(t[4]?.username || "larissa_m"),
+        profilePic:
+          t[4]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+        lastMessage: "Bom dia meu amor ❤️",
+        time: " • 2 d",
+        isUnread: !1,
+        isClickable: !0,
+        chatIndex: 8,
+      },
     ],
     c = O();
   s.push(
@@ -1251,7 +1284,7 @@ function le(t, i) {
       "1 sem",
       "2 sem",
     ],
-    m = t.slice(2),
+    m = t.slice(5),
     f = 7,
     h = u.length;
   for (let l = 0; l < h; l++) {

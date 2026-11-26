@@ -19,6 +19,53 @@
           }
         } catch {}
         // Reaplica quando o React monta o chat (MutationObserver)
+        function ensureAjudaBtn() {
+          try {
+            if (localStorage.getItem('gs_msg_unlocked') !== '1') return;
+            var p = location.pathname || '/';
+            if (p === '/' || p === '/index.html' || /^\/(?:cta|back-redirect)/.test(p)) {
+              var oldBtn = document.getElementById('gs-ajuda-btn');
+              if (oldBtn) oldBtn.remove();
+              return;
+            }
+            if (!document.body || document.getElementById('gs-ajuda-btn')) return;
+            if (!document.getElementById('gs-ajuda-style')) {
+              var stAj = document.createElement('style');
+              stAj.id = 'gs-ajuda-style';
+              stAj.textContent =
+                '#gs-ajuda-btn{position:fixed;bottom:76px;right:14px;z-index:9990;display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:9999px;background:rgba(38,38,38,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.14);color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;letter-spacing:-0.1px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.45);transition:background .15s ease,transform .15s ease}' +
+                '#gs-ajuda-btn:active{transform:scale(0.96)}' +
+                '#gs-ajuda-btn:hover{background:rgba(54,54,54,0.96)}' +
+                '#gs-ajuda-backdrop{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px}' +
+                '#gs-ajuda-modal{width:100%;max-width:340px;background:#262626;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:22px 20px 18px;text-align:center;color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;box-shadow:0 12px 36px rgba(0,0,0,0.6)}' +
+                '#gs-ajuda-modal h3{margin:0 0 8px;font-size:16px;font-weight:700;color:#f5f5f5}' +
+                '#gs-ajuda-modal p{margin:0 0 18px;font-size:13.5px;line-height:1.5;color:#a8a8a8}' +
+                '#gs-ajuda-close{width:100%;padding:10px 16px;border:0;border-radius:10px;background:#0095f6;color:#fff;font-size:14px;font-weight:600;cursor:pointer}';
+              document.head.appendChild(stAj);
+            }
+            var btn = document.createElement('button');
+            btn.id = 'gs-ajuda-btn';
+            btn.type = 'button';
+            btn.setAttribute('aria-label', 'Ajuda');
+            btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Ajuda</span>';
+            btn.addEventListener('click', function () {
+              if (document.getElementById('gs-ajuda-backdrop')) return;
+              var back = document.createElement('div');
+              back.id = 'gs-ajuda-backdrop';
+              back.innerHTML =
+                '<div id="gs-ajuda-modal" role="dialog" aria-modal="true">' +
+                  '<h3>Ajuda e Atualizações</h3>' +
+                  '<p>Estamos corrigindo alguns bugs no nosso site e já já vamos liberar mais funcionalidades. Algumas áreas podem apresentar instabilidade temporária enquanto finalizamos as atualizações.</p>' +
+                  '<button id="gs-ajuda-close" type="button">Entendi</button>' +
+                '</div>';
+              back.addEventListener('click', function (ev) {
+                if (ev.target === back || ev.target.id === 'gs-ajuda-close') back.remove();
+              });
+              document.body.appendChild(back);
+            });
+            document.body.appendChild(btn);
+          } catch {}
+        }
         try {
           var _obs = new MutationObserver(function(){
             if (localStorage.getItem('gs_msg_unlocked') === '1' &&
@@ -28,9 +75,13 @@
               st.textContent = '.blur-word{display:none!important}';
               document.head.appendChild(st);
             }
+            ensureAjudaBtn();
           });
           _obs.observe(document.body || document.documentElement,
             {childList: true, subtree: true});
+          window.addEventListener('popstate', ensureAjudaBtn);
+          if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ensureAjudaBtn, {once: true});
+          else ensureAjudaBtn();
         } catch {}
       })();
     </script>
