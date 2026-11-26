@@ -122,12 +122,17 @@
         }
       }
 
+      function unlockMessages() {
+        try { localStorage.setItem('gs_msg_unlocked', '1'); } catch {}
+      }
+
       function showConfirmed(data) {
         verifyForm.classList.remove('visible');
         heading.textContent = 'Pagamento confirmado!';
         intro.textContent = 'Obrigado pela sua compra.';
         nextTitle.textContent = 'Acesso ao serviço';
         nextText.textContent = 'Transação validada. O serviço analisa e exibe exclusivamente informações públicas disponíveis dos perfis consultados, conforme anunciado.';
+        unlockMessages();
         trackConfirmedPurchase(data);
       }
 

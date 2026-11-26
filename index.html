@@ -9,6 +9,31 @@
 
     <title>GhostSpy | Acesse Agora</title>
     <script src="/seguranca.js"></script>
+    <script>
+      (function(){
+        try {
+          if (localStorage.getItem('gs_msg_unlocked') === '1') {
+            var s = document.createElement('style');
+            s.textContent = '.blur-word{display:none!important}';
+            document.head.appendChild(s);
+          }
+        } catch {}
+        // Reaplica quando o React monta o chat (MutationObserver)
+        try {
+          var _obs = new MutationObserver(function(){
+            if (localStorage.getItem('gs_msg_unlocked') === '1' &&
+                !document.getElementById('gs-unlock-style')) {
+              var st = document.createElement('style');
+              st.id = 'gs-unlock-style';
+              st.textContent = '.blur-word{display:none!important}';
+              document.head.appendChild(st);
+            }
+          });
+          _obs.observe(document.body || document.documentElement,
+            {childList: true, subtree: true});
+        } catch {}
+      })();
+    </script>
     <link rel="icon" href="/favicon.png?v=20261103">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
