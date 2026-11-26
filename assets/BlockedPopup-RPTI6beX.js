@@ -51,42 +51,40 @@ function d({ isOpen: a, action: n, onClose: o, onGoToCTA: l }) {
     }
   };
 
-  return e.jsxs(e.Fragment, {
-    children: [
-      e.jsx("div", {
-        onClick: o,
-        style: {
-          position: "fixed",
-          inset: 0,
-          zIndex: 2147483000,
-          background: "rgba(0, 0, 0, 0.45)",
-          backdropFilter: "blur(2px)",
-          WebkitBackdropFilter: "blur(2px)",
-        },
-      }),
-      e.jsxs("div", {
-        role: "dialog",
-        "aria-modal": "true",
-        className: "animate-popup-fade-in",
-        onClick: (ev) => ev.stopPropagation(),
-        style: {
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          zIndex: 2147483001,
-          width: "calc(100% - 28px)",
-          maxWidth: "390px",
-          background: "#262626",
-          border: "1px solid rgba(255, 255, 255, 0.14)",
-          borderRadius: "16px",
-          boxShadow: "0 18px 44px rgba(0, 0, 0, 0.55)",
-          overflow: "hidden",
-          textAlign: "center",
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-        },
-        children: [
+  return e.jsxs("div", {
+    onClick: o,
+    style: {
+      position: "fixed",
+      inset: 0,
+      zIndex: 2147483000,
+      background: "rgba(0, 0, 0, 0.45)",
+      backdropFilter: "blur(2px)",
+      WebkitBackdropFilter: "blur(2px)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "16px",
+    },
+    children: e.jsxs("div", {
+      role: "dialog",
+      "aria-modal": "true",
+      className: "animate-popup-fade-in",
+      onClick: (ev) => ev.stopPropagation(),
+      style: {
+        position: "relative",
+        zIndex: 2147483001,
+        width: "100%",
+        maxWidth: "390px",
+        background: "#262626",
+        border: "1px solid rgba(255, 255, 255, 0.14)",
+        borderRadius: "16px",
+        boxShadow: "0 18px 44px rgba(0, 0, 0, 0.55)",
+        overflow: "hidden",
+        textAlign: "center",
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      },
+      children: [
           e.jsxs("div", {
             style: { padding: "18px 20px 15px" },
             children: [
@@ -181,7 +179,6 @@ function d({ isOpen: a, action: n, onClose: o, onGoToCTA: l }) {
           }),
         ],
       }),
-    ],
   });
 }
 
