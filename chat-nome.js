@@ -29,7 +29,7 @@
  }
  let queued=false;
  function update(){
-   if(!/^\/chat\/[1-8](?:\/|$)/.test(location.pathname) || !document.body)return;
+   if(!/^\/chat\/(?:[1-9]|1[0-3])(?:\/|$)/.test(location.pathname) || !document.body)return;
    const name=firstName()||'Ei'; // Nunca transformar @ssupedro no nome "ssupedro".
    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
    let node;

@@ -29,8 +29,8 @@
    if(localStorage.getItem(key)===null)localStorage.setItem(key,'[]');
   }
   if(!localStorage.getItem('shared_timer_start'))localStorage.setItem('shared_timer_start',String(Date.now()));
-  const names=['Fer*****','And*****','Bru*****','Contato 4','Contato 5','Contato 6','Contato 7','Contato 8'];
-  for(let k=1;k<=8;k++){
+  const names=['Fer*****','And*****','Bru*****','Contato 4','Contato 5','Contato 6','Contato 7','Contato 8','Contato 9','Contato 10','Contato 11','Contato 12','Contato 13'];
+  for(let k=1;k<=13;k++){
    const key=`chat-${k}-user-name`,old=sessionStorage.getItem(key);
    if(!old||/demo|demonstrativ/i.test(old))sessionStorage.setItem(key,names[k-1]);
    if(!sessionStorage.getItem(`chat-${k}-user-photo`))

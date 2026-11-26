@@ -24,12 +24,14 @@ test('chat 3 usa dynamicType userCity com prefixo "Estou por "', () => {
   assert.match(chatSrc, /window\.addEventListener\("gs:city",\s*onCity\)/);
 });
 
-test('chats 6, 7 e 8 existem em Ue e ct com mensagens borradas', () => {
-  for (const id of [6, 7, 8]) {
+test('chats 6 a 13 existem em Ue e ct com mensagens borradas e sem trava no scroll', () => {
+  for (const id of [6, 7, 8, 9, 10, 11, 12, 13]) {
     assert.match(chatSrc, new RegExp(`sessionKey:\\s*"chat-${id}"`), `chat-${id} deve existir em Ue`);
     assert.match(chatSrc, new RegExp(`\\n\\s*${id}:\\s*\\[\\s*\\n\\s*\\{\\s*id:\\s*"bh1"`), `ct[${id}] deve ter histórico borrado`);
   }
   assert.match(chatSrc, /blurredContent:/);
+  assert.match(chatSrc, /requestAnimationFrame/);
+  assert.doesNotMatch(indexSrc, /new MutationObserver/);
 });
 
 test('scroll para cima é bloqueado na versão grátis e liberado com gs_msg_unlocked', () => {
@@ -38,17 +40,17 @@ test('scroll para cima é bloqueado na versão grátis e liberado com gs_msg_unl
   assert.match(chatSrc, /f\.current\s*=\s*!1/);
 });
 
-test('direct-CrUBYN4v.js lista chats 6, 7 e 8 e evita colisão nos locked', () => {
-  assert.match(directSrc, /chatIndex:\s*6/);
-  assert.match(directSrc, /chatIndex:\s*7/);
-  assert.match(directSrc, /chatIndex:\s*8/);
-  assert.match(directSrc, /m\s*=\s*t\.slice\(5\)/);
+test('direct-CrUBYN4v.js lista chats 6 a 13 e evita colisão nos locked', () => {
+  for (const id of [6, 7, 8, 9, 10, 11, 12, 13]) {
+    assert.match(directSrc, new RegExp(`chatIndex:\\s*${id}`));
+  }
+  assert.match(directSrc, /m\s*=\s*t\.slice\(10\)/);
 });
 
-test('rotas e helpers suportam chats 1 a 8', () => {
-  assert.match(navSrc, /k<=8/);
-  assert.match(chatNomeSrc, /\[1-8\]/);
-  assert.match(devServerSrc, /\[1-8\]/);
+test('rotas e helpers suportam chats 1 a 13', () => {
+  assert.match(navSrc, /k<=13/);
+  assert.match(chatNomeSrc, /1\[0-3\]/);
+  assert.match(devServerSrc, /1\[0-3\]/);
 });
 
 test('pagamento confirmado seta gs_msg_unlocked e index.html remove .blur-word', () => {

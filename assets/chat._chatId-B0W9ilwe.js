@@ -137,7 +137,7 @@ const Ve = {
         { id: "29", type: "audio", direction: "received", audioDuration: "0:07" },
         { id: "30", type: "text", direction: "sent", content: "Pode deixar" },
         { id: "31", type: "heart", direction: "received" },
-        { id: "32", type: "text", direction: "sent", content: "Vc é doida" },
+        { id: "32", type: "text", direction: "sent", content: "Vc não existe kkkk" },
         { id: "33", type: "text", direction: "received", content: "Sei lá né" },
         { id: "34", type: "text", direction: "sent", content: "Que saudade de vc mds" },
         { id: "35", type: "text", direction: "received", content: "Eu sei", blurredContent: "** ** ** ** **" },
@@ -150,7 +150,7 @@ const Ve = {
         { id: "42", type: "text", direction: "received", content: "🥹🥹" },
         { id: "43", type: "text", direction: "sent", content: "Olha que saudade, quando a gente vai se ver de novo?", blurredContent: "** ** ** ** **" },
         { id: "44", type: "text", direction: "received", content: "Logo logo bb" },
-        { id: "45", type: "text", direction: "received", content: "Vc some e fica sumido", blurredContent: "** ** ** ** ** **" },
+        { id: "45", type: "text", direction: "received", content: "Vc some e não dá sinal", blurredContent: "** ** ** ** ** **" },
         { id: "46", type: "text", direction: "sent", content: "Nao sumo nao, vc que nao fala" },
         { id: "47", type: "text", direction: "received", content: "Mentira sua" },
         { id: "48", type: "audio", direction: "received", audioDuration: "0:14" },
@@ -160,6 +160,13 @@ const Ve = {
             type: "date",
             direction: "system",
             timeId: "lastMessageTime",
+        },
+        {
+            id: "50b",
+            type: "text",
+            direction: "received",
+            content: "Tô por ",
+            dynamicType: "userCity",
         },
         {
             id: "51",
@@ -311,8 +318,8 @@ const Ve = {
             { id: "31", type: "text", direction: "sent", content: "Que saudade de vc mds" },
             { id: "32", type: "text", direction: "received", content: "Que saudade sua também", blurredContent: "** ** ** ** **" },
             { id: "33", type: "audio", direction: "sent", audioDuration: "0:17" },
-            { id: "34", type: "text", direction: "received", content: "KKKK você é louco" },
-            { id: "35", type: "text", direction: "sent", content: "Louco por vc" },
+            { id: "34", type: "text", direction: "received", content: "KKKK você não tem jeito" },
+            { id: "35", type: "text", direction: "sent", content: "Sem jeito por vc" },
             { id: "36", type: "heart", direction: "received" },
             { id: "37", type: "text", direction: "received", content: "Para, fica quieto" },
             { id: "38", type: "text", direction: "sent", content: "Nunca kkk", blurredContent: "** ** ** ** **" },
@@ -322,7 +329,7 @@ const Ve = {
             { id: "42", type: "text", direction: "sent", content: "Promessa ❤️" },
             { id: "43", type: "unread_divider", direction: "system" },
             { id: "44", type: "date", direction: "system", timeId: "lastMessageTime" },
-            { id: "45", type: "text", direction: "received", content: "Oi sumido, quanto tempo" },
+            { id: "45", type: "text", direction: "received", content: "Oi, quanto tempo" },
         ],
     },
     Ke = {
@@ -553,14 +560,14 @@ const Ve = {
             },
             { id: "22", type: "text", direction: "sent", content: "Vai lá, qualquer coisa me chama" },
             { id: "23", type: "audio", direction: "received", audioDuration: "0:33" },
-            { id: "24", type: "text", direction: "sent", content: "Kkkk você é demorida" },
+            { id: "24", type: "text", direction: "sent", content: "Kkkk você enrola demais" },
             { id: "25", type: "text", direction: "received", content: "Para vc também", blurredContent: "** ** ** **" },
             { id: "26", type: "text", direction: "sent", content: "Calma, eu sei" },
             { id: "27", type: "text", direction: "received", content: "Sei la, duvido", blurredContent: "** ** ** ** **" },
             { id: "28", type: "audio", direction: "sent", audioDuration: "0:07" },
             { id: "29", type: "text", direction: "received", content: "KKKKK era isso mesmo" },
-            { id: "30", type: "text", direction: "received", content: "Vc é idiota" },
-            { id: "31", type: "text", direction: "sent", content: "Idiota apaixonado" },
+            { id: "30", type: "text", direction: "received", content: "Vc não presta" },
+            { id: "31", type: "text", direction: "sent", content: "Só contigo ❤️" },
             { id: "32", type: "heart", direction: "received" },
             { id: "33", type: "text", direction: "received", content: "Para de fazer isso comigo" },
             { id: "34", type: "text", direction: "sent", content: "Nunca ❤️", blurredContent: "** ** ** ** ** **" },
@@ -705,13 +712,13 @@ const Ve = {
             { id: "5", type: "text", direction: "sent", content: "Que saudade hein" },
             { id: "6", type: "text", direction: "received", content: "Tô falando sério", blurredContent: "** ** ** ** **" },
             { id: "7", type: "audio", direction: "sent", audioDuration: "0:12" },
-            { id: "8", type: "text", direction: "received", content: "KKKK você é idiota" },
-            { id: "9", type: "text", direction: "sent", content: "Idiota de quem?" },
-            { id: "10", type: "text", direction: "received", content: "Meu idiota ❤️", blurredContent: "** ** ** **" },
+            { id: "8", type: "text", direction: "received", content: "KKKK você não tem jeito" },
+            { id: "9", type: "text", direction: "sent", content: "Só com vc" },
+            { id: "10", type: "text", direction: "received", content: "Meu ponto fraco ❤️", blurredContent: "** ** ** **" },
             { id: "11", type: "heart", direction: "sent" },
             { id: "12", type: "date", direction: "system", content: "16 DE NOV, 09:45" },
             { id: "13", type: "text", direction: "received", content: "Bom dia meu amor" },
-            { id: "14", type: "text", direction: "sent", content: "Bom dia linda ❤️" },
+            { id: "14", type: "text", direction: "sent", content: "Bom dia meu bem ❤️" },
             { id: "15", type: "text", direction: "received", content: "Dormiu bem?" },
             { id: "16", type: "text", direction: "sent", content: "Sonhei com vc então sim kk" },
             { id: "17", type: "text", direction: "received", content: "KKKK para" },
@@ -719,13 +726,13 @@ const Ve = {
             { id: "19", type: "audio", direction: "received", audioDuration: "0:19" },
             { id: "20", type: "text", direction: "sent", content: "Escuta esse áudio agora" },
             { id: "21", type: "audio", direction: "sent", audioDuration: "0:38" },
-            { id: "22", type: "text", direction: "received", content: "Vc é doido", reaction: "❤️" },
+            { id: "22", type: "text", direction: "received", content: "Vc me tira do sério", reaction: "❤️" },
             { id: "23", type: "text", direction: "received", content: "Não aguento você" },
             { id: "24", type: "text", direction: "sent", content: "Mas você me aguenta né" },
             { id: "25", type: "text", direction: "received", content: "Sempre", blurredContent: "** ** ** ** ** ** **" },
             { id: "26", type: "date", direction: "system", content: "ONTEM, 22:30" },
-            { id: "27", type: "text", direction: "received", content: "Oi sumido" },
-            { id: "28", type: "text", direction: "sent", content: "Oi linda, que foi?" },
+            { id: "27", type: "text", direction: "received", content: "Oi, sumiu hein" },
+            { id: "28", type: "text", direction: "sent", content: "Oi meu bem, que foi?" },
             { id: "29", type: "text", direction: "received", content: "Nada não, fiquei com vontade de falar" },
             { id: "30", type: "text", direction: "sent", content: "Que bom ❤️" },
             { id: "31", type: "text", direction: "received", content: "To com vontade de te ver", blurredContent: "** ** ** **" },
@@ -759,15 +766,15 @@ const Ve = {
             { id: "18", type: "text", direction: "received", content: "E daí", blurredContent: "** ** **" },
             { id: "19", type: "audio", direction: "sent", audioDuration: "0:03" },
             { id: "20", type: "text", direction: "received", content: "Que saudade da sua voz" },
-            { id: "21", type: "text", direction: "sent", content: "Kk vc é doidona" },
-            { id: "22", type: "text", direction: "received", content: "Doidona por vc", blurredContent: "** ** ** ** **" },
+            { id: "21", type: "text", direction: "sent", content: "Kk vc não tem limites" },
+            { id: "22", type: "text", direction: "received", content: "Sem limites por vc", blurredContent: "** ** ** ** **" },
             { id: "23", type: "audio", direction: "received", audioDuration: "0:52" },
-            { id: "24", type: "text", direction: "sent", content: "Vai dormir menina" },
+            { id: "24", type: "text", direction: "sent", content: "Vai dormir logo" },
             { id: "25", type: "text", direction: "received", content: "Só depois que vc me der boa noite" },
             { id: "26", type: "text", direction: "sent", content: "Boa noite amor 🥹" },
             { id: "27", type: "text", direction: "received", content: "Boa noite ❤️", blurredContent: "** ** ** ** **" },
             { id: "28", type: "date", direction: "system", content: "ONTEM, 20:17" },
-            { id: "29", type: "text", direction: "received", content: "Vc tá sumido de novo" },
+            { id: "29", type: "text", direction: "received", content: "Vc sumiu de novo" },
             { id: "30", type: "text", direction: "received", content: "Vc some quando mais preciso de vc" },
             { id: "31", type: "text", direction: "received", content: "Que raiva", blurredContent: "** ** ** **" },
             { id: "32", type: "unread_divider", direction: "system" },
@@ -790,14 +797,14 @@ const Ve = {
             { id: "10", type: "heart", direction: "sent" },
             { id: "11", type: "text", direction: "received", content: "Para de ser assim comigo" },
             { id: "12", type: "text", direction: "sent", content: "Como assim?" },
-            { id: "13", type: "text", direction: "received", content: "Desse jeito gostoso", blurredContent: "** ** ** ** **" },
+            { id: "13", type: "text", direction: "received", content: "Desse jeito que me desmonta", blurredContent: "** ** ** ** **" },
             { id: "14", type: "audio", direction: "sent", audioDuration: "0:14" },
             { id: "15", type: "text", direction: "received", content: "KKKK você é absurdo" },
-            { id: "16", type: "text", direction: "sent", content: "Absurdo apaixonado" },
+            { id: "16", type: "text", direction: "sent", content: "Não te tiro da cabeça" },
             { id: "17", type: "text", direction: "received", content: "Que cafona kkk", reaction: "❤️" },
             { id: "18", type: "date", direction: "system", content: "ONTEM, 23:40" },
             { id: "19", type: "text", direction: "received", content: "Oi amor" },
-            { id: "20", type: "text", direction: "sent", content: "Oi linda" },
+            { id: "20", type: "text", direction: "sent", content: "Oi meu bem" },
             { id: "21", type: "text", direction: "received", content: "Que saudade de vc hein" },
             { id: "22", type: "text", direction: "sent", content: "Que saudade sua também" },
             { id: "23", type: "text", direction: "received", content: "Quando a gente se vê?", blurredContent: "** ** ** **" },
@@ -806,10 +813,92 @@ const Ve = {
             { id: "26", type: "text", direction: "sent", content: "Prometo ❤️" },
             { id: "27", type: "heart", direction: "received" },
             { id: "28", type: "text", direction: "received", content: "Boa noite amor" },
-            { id: "29", type: "text", direction: "sent", content: "Boa noite linda 🥹❤️" },
+            { id: "29", type: "text", direction: "sent", content: "Boa noite amor 🥹❤️" },
             { id: "30", type: "unread_divider", direction: "system" },
             { id: "31", type: "date", direction: "system", timeId: "lastMessageTime" },
             { id: "32", type: "text", direction: "received", content: "Bom dia meu amor ❤️" },
+        ],
+    },
+    9: {
+        id: 9, sessionKey: "chat-9", storageTimeKey: "chat-time-start-23", readKey: "chat-9-read", defaultStatus: "Online",
+        messages: [
+            { id: "1", type: "date", direction: "system", content: "3 dias atrás, 23:51" },
+            { id: "2", type: "text", direction: "received", content: "Apaga essa conversa depois tá" },
+            { id: "3", type: "text", direction: "sent", content: "Pode deixar, já apago sempre" },
+            { id: "4", type: "text", direction: "received", content: "Ninguém pode desconfiar", blurredContent: "** ** ** ** ** **" },
+            { id: "5", type: "audio", direction: "received", audioDuration: "0:18" },
+            { id: "6", type: "text", direction: "sent", content: "Fica em paz, confia em mim" },
+            { id: "7", type: "text", direction: "received", content: "To por ", dynamicType: "userCity" },
+            { id: "8", type: "text", direction: "received", content: "Consegue sair hoje mais tarde?", blurredContent: "** ** ** ** **" },
+            { id: "9", type: "text", direction: "sent", content: "Depois das 22h eu consigo", reaction: "😈" },
+            { id: "10", type: "audio", direction: "sent", audioDuration: "0:11" },
+            { id: "11", type: "unread_divider", direction: "system" },
+            { id: "12", type: "date", direction: "system", timeId: "lastMessageTime" },
+            { id: "13", type: "text", direction: "received", content: "Tô te esperando no mesmo lugar" },
+        ],
+    },
+    10: {
+        id: 10, sessionKey: "chat-10", storageTimeKey: "chat-time-start-24", readKey: "chat-10-read", defaultStatus: "Online há 15 min",
+        messages: [
+            { id: "1", type: "date", direction: "system", content: "ONTEM, 19:20" },
+            { id: "2", type: "text", direction: "received", content: "Quem era aquela pessoa no seu story?" },
+            { id: "3", type: "text", direction: "sent", content: "Não começa com cena agora" },
+            { id: "4", type: "text", direction: "received", content: "Cena?? Eu vi muito bem", blurredContent: "** ** ** ** ** **" },
+            { id: "5", type: "audio", direction: "received", audioDuration: "0:47" },
+            { id: "6", type: "text", direction: "sent", content: "Para de surtar, não tinha nada demais" },
+            { id: "7", type: "text", direction: "received", content: "Vc sempre fala isso", blurredContent: "** ** ** **" },
+            { id: "8", type: "audio", direction: "sent", audioDuration: "0:31" },
+            { id: "9", type: "text", direction: "received", content: "Tá... mas não faz mais isso comigo", reaction: "❤️" },
+            { id: "10", type: "text", direction: "sent", content: "Vem cá que eu te explico direito" },
+            { id: "11", type: "unread_divider", direction: "system" },
+            { id: "12", type: "date", direction: "system", timeId: "lastMessageTime" },
+            { id: "13", type: "text", direction: "received", content: "Ainda tô com raiva de vc" },
+        ],
+    },
+    11: {
+        id: 11, sessionKey: "chat-11", storageTimeKey: "chat-time-start-25", readKey: "chat-11-read", defaultStatus: "Online",
+        messages: [
+            { id: "1", type: "date", direction: "system", content: "ONTEM, 01:14" },
+            { id: "2", type: "text", direction: "received", content: "Tô sem sono nenhum" },
+            { id: "3", type: "text", direction: "sent", content: "Eu também, pensando em vc", reaction: "😈" },
+            { id: "4", type: "text", direction: "received", content: "Vc provoca e depois some", blurredContent: "** ** ** ** ** **" },
+            { id: "5", type: "audio", direction: "sent", audioDuration: "0:15" },
+            { id: "6", type: "text", direction: "received", content: "Mds não fala assim", blurredContent: "** ** ** ** **" },
+            { id: "7", type: "heart", direction: "received" },
+            { id: "8", type: "text", direction: "sent", content: "Amanhã a gente resolve isso pessoalmente" },
+            { id: "9", type: "unread_divider", direction: "system" },
+            { id: "10", type: "date", direction: "system", timeId: "lastMessageTime" },
+            { id: "11", type: "text", direction: "received", content: "Não esqueci do que vc falou ontem 😈" },
+        ],
+    },
+    12: {
+        id: 12, sessionKey: "chat-12", storageTimeKey: "chat-time-start-26", readKey: "chat-12-read", defaultStatus: "Online há 48 min",
+        messages: [
+            { id: "1", type: "date", direction: "system", content: "2 dias atrás, 16:05" },
+            { id: "2", type: "text", direction: "sent", content: "Já reservei tudo pro fim de semana" },
+            { id: "3", type: "text", direction: "received", content: "Sério?? Ninguém pode saber disso" },
+            { id: "4", type: "text", direction: "sent", content: "Fica tranquilo, já dei uma desculpa aqui", blurredContent: "** ** ** ** ** **" },
+            { id: "5", type: "audio", direction: "received", audioDuration: "0:24" },
+            { id: "6", type: "text", direction: "received", content: "Tô contando os dias", reaction: "❤️" },
+            { id: "7", type: "text", direction: "sent", content: "Vai valer muito a pena", blurredContent: "** ** ** **" },
+            { id: "8", type: "unread_divider", direction: "system" },
+            { id: "9", type: "date", direction: "system", timeId: "lastMessageTime" },
+            { id: "10", type: "text", direction: "received", content: "Que horas a gente sai sexta?" },
+        ],
+    },
+    13: {
+        id: 13, sessionKey: "chat-13", storageTimeKey: "chat-time-start-27", readKey: "chat-13-read", defaultStatus: "Online",
+        messages: [
+            { id: "1", type: "date", direction: "system", content: "ONTEM, 17:40" },
+            { id: "2", type: "text", direction: "received", content: "Vi vc online e não me responde" },
+            { id: "3", type: "text", direction: "received", content: "Custava me mandar uma mensagem?" },
+            { id: "4", type: "text", direction: "sent", content: "Eu tava resolvendo umas coisas aqui" },
+            { id: "5", type: "text", direction: "received", content: "A gente precisa conversar pessoalmente", blurredContent: "** ** ** ** ** **" },
+            { id: "6", type: "audio", direction: "received", audioDuration: "0:39" },
+            { id: "7", type: "text", direction: "sent", content: "Agora não dá, mais tarde eu te ligo", blurredContent: "** ** ** **" },
+            { id: "8", type: "unread_divider", direction: "system" },
+            { id: "9", type: "date", direction: "system", timeId: "lastMessageTime" },
+            { id: "10", type: "text", direction: "received", content: "Tô esperando sua ligação até agora" },
         ],
     }},
     le = "viewedChatImages";
@@ -1961,7 +2050,7 @@ const ct = {
         { id: "bh8", direction: "sent", type: "text", content: "Mais tarde a gente se fala", blurredPart: "** ** ** **" },
     ],
     7: [
-        { id: "bh1", direction: "received", type: "text", content: "Cansada disso já" },
+        { id: "bh1", direction: "received", type: "text", content: "Cansei disso já" },
         { id: "bh2", direction: "sent", type: "text", content: "Calma, não começa", blurredPart: "** ** ** ** **" },
         { id: "bh3", direction: "received", type: "text", content: "Vc nunca tem tempo ", blurredPart: "** ** ** ** ** ** **" },
         { id: "bh4", direction: "sent", type: "audio", audioDuration: "0:34" },
@@ -1974,9 +2063,40 @@ const ct = {
         { id: "bh2", direction: "received", type: "text", content: "Sério? ", blurredPart: "** ** ** ** ** **" },
         { id: "bh3", direction: "sent", type: "audio", audioDuration: "0:16" },
         { id: "bh4", direction: "received", type: "text", content: "Para de falar essas coisas", blurredPart: "** ** ** ** **" },
-        { id: "bh5", direction: "sent", type: "text", content: "Só tô falando a verdade ❤️" },
+        { id: "bh5", direction: "sent", content: "Só tô falando a verdade ❤️", type: "text" },
         { id: "bh6", direction: "received", type: "heart" },
-        { id: "bh7", direction: "received", type: "text", content: "Vc me deixa doida", blurredPart: "** ** ** ** **" },
+        { id: "bh7", direction: "received", type: "text", content: "Vc me deixa sem jeito", blurredPart: "** ** ** ** **" },
+    ],
+    9: [
+        { id: "bh1", direction: "received", type: "text", content: "Conseguiu sair sem ninguém ver?" },
+        { id: "bh2", direction: "sent", type: "text", content: "Sim, deu tudo certo", blurredPart: "** ** ** ** **" },
+        { id: "bh3", direction: "received", type: "audio", audioDuration: "0:14" },
+        { id: "bh4", direction: "sent", type: "text", content: "Apaga o histórico depois", blurredPart: "** ** ** ** **" },
+        { id: "bh5", direction: "received", type: "heart" },
+    ],
+    10: [
+        { id: "bh1", direction: "received", type: "text", content: "Não gostei nada daquilo" },
+        { id: "bh2", direction: "sent", type: "text", content: "Para de procurar motivo", blurredPart: "** ** ** ** **" },
+        { id: "bh3", direction: "received", type: "audio", audioDuration: "0:37" },
+        { id: "bh4", direction: "sent", type: "text", content: "Depois a gente conversa", blurredPart: "** ** ** **" },
+    ],
+    11: [
+        { id: "bh1", direction: "received", type: "text", content: "Vc não sai da minha cabeça" },
+        { id: "bh2", direction: "sent", type: "text", content: "Nem vc da minha", blurredPart: "** ** ** ** **" },
+        { id: "bh3", direction: "received", type: "audio", audioDuration: "0:21" },
+        { id: "bh4", direction: "sent", type: "heart" },
+    ],
+    12: [
+        { id: "bh1", direction: "sent", type: "text", content: "Vê se não comenta com ninguém" },
+        { id: "bh2", direction: "received", type: "text", content: "Pode deixar", blurredPart: "** ** ** ** **" },
+        { id: "bh3", direction: "sent", type: "audio", audioDuration: "0:19" },
+        { id: "bh4", direction: "received", type: "text", content: "Tô contando os dias ❤️", blurredPart: "** ** ** **" },
+    ],
+    13: [
+        { id: "bh1", direction: "received", type: "text", content: "Por que vc tá me ignorando?" },
+        { id: "bh2", direction: "sent", type: "text", content: "Não tô ignorando", blurredPart: "** ** ** ** **" },
+        { id: "bh3", direction: "received", type: "audio", audioDuration: "0:41" },
+        { id: "bh4", direction: "received", type: "text", content: "Me responde logo", blurredPart: "** ** ** **" },
     ],
 },
     dt = [
@@ -2263,6 +2383,18 @@ function ut({ config: t }) {
                 lastMessageTime: z,
                 userCity: initialCity || "sua cidade",
             }));
+            if (!initialCity && typeof fetch === "function") {
+                fetch("/api/location", { cache: "no-store" })
+                    .then((res) => (res.ok ? res.json() : null))
+                    .then((loc) => {
+                        const c = String(loc?.city || "").trim();
+                        if (c && c.toLowerCase() !== "unknown") {
+                            try { localStorage.setItem("user_city", c); } catch {}
+                            k((o) => ({ ...o, userCity: c }));
+                        }
+                    })
+                    .catch(() => {});
+            }
         const onCity = (ev) => {
             const c = ev?.detail?.city || (typeof localStorage < "u" && (localStorage.getItem("user_city") || localStorage.getItem("user_real_city"))) || "";
             if (c) k((o) => ({ ...o, userCity: c }));
@@ -2305,26 +2437,32 @@ function ut({ config: t }) {
     i.useEffect(() => {
         const n = c.current;
         if (!n) return;
+        let ticking = !1;
         const l = () => {
+            if (ticking || f.current) return;
             try {
                 if (localStorage.getItem("gs_msg_unlocked") === "1") return;
             } catch {}
-            if (f.current) return;
-            const m = y.current;
-            if (!m) return;
-            const w = m.getBoundingClientRect(),
-                g = n.getBoundingClientRect(),
-                F = w.top + w.height * 0.5;
-            F > g.top &&
-                F < g.bottom &&
-                ((f.current = !0),
-                    I({ isOpen: !0, action: s.chat.viewFullHistory }),
-                    setTimeout(() => {
-                        r.current?.scrollIntoView({ behavior: "smooth" });
-                    }, 300),
-                    setTimeout(() => {
-                        f.current = !1;
-                    }, 900));
+            ticking = !0;
+            requestAnimationFrame(() => {
+                ticking = !1;
+                if (f.current) return;
+                const m = y.current;
+                if (!m) return;
+                const w = m.getBoundingClientRect(),
+                    g = n.getBoundingClientRect(),
+                    F = w.top + w.height * 0.5;
+                F > g.top &&
+                    F < g.bottom &&
+                    ((f.current = !0),
+                        I({ isOpen: !0, action: s.chat.viewFullHistory }),
+                        setTimeout(() => {
+                            r.current?.scrollIntoView({ behavior: "smooth" });
+                        }, 300),
+                        setTimeout(() => {
+                            f.current = !1;
+                        }, 900));
+            });
         };
         return (
             n.addEventListener("scroll", l, { passive: !0 }),

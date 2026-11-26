@@ -1244,6 +1244,61 @@ function le(t, i) {
         isClickable: !0,
         chatIndex: 8,
       },
+      {
+        id: "chat_23",
+        displayName: I(t[5]?.username || "rafa_silva"),
+        profilePic:
+          t[5]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+        lastMessage: "Tô te esperando no mesmo lugar",
+        time: " • 2 d",
+        isUnread: !0,
+        isClickable: !0,
+        chatIndex: 9,
+      },
+      {
+        id: "chat_24",
+        displayName: I(t[6]?.username || "duda.costa"),
+        profilePic:
+          t[6]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+        lastMessage: "Ainda tô com raiva de vc",
+        time: " • 3 d",
+        isUnread: !0,
+        isClickable: !0,
+        chatIndex: 10,
+      },
+      {
+        id: "chat_25",
+        displayName: I(t[7]?.username || "thiago_alves"),
+        profilePic:
+          t[7]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+        lastMessage: "Não esqueci do que vc falou ontem 😈",
+        time: " • 3 d",
+        isUnread: !1,
+        isClickable: !0,
+        chatIndex: 11,
+      },
+      {
+        id: "chat_26",
+        displayName: I(t[8]?.username || "bia.oliveira"),
+        profilePic:
+          t[8]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+        lastMessage: "Que horas a gente sai sexta?",
+        time: " • 4 d",
+        isUnread: !1,
+        isClickable: !0,
+        chatIndex: 12,
+      },
+      {
+        id: "chat_27",
+        displayName: I(t[9]?.username || "gabi_souza"),
+        profilePic:
+          t[9]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+        lastMessage: "Tô esperando sua ligação até agora",
+        time: " • 5 d",
+        isUnread: !0,
+        isClickable: !0,
+        chatIndex: 13,
+      },
     ],
     c = O();
   s.push(
@@ -1284,7 +1339,7 @@ function le(t, i) {
       "1 sem",
       "2 sem",
     ],
-    m = t.slice(5),
+    m = t.slice(10),
     f = 7,
     h = u.length;
   for (let l = 0; l < h; l++) {

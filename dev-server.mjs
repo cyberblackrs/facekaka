@@ -73,7 +73,7 @@ const server=createServer(async(req,res)=>{
   }
   let file=null;
   if(pathname==='/obrigado')file='obrigado.html';
-  else if(ROUTES.has(pathname)||/^\/chat\/[1-8]$/.test(pathname))file='index.html';
+  else if(ROUTES.has(pathname)||/^\/chat\/(?:[1-9]|1[0-3])$/.test(pathname))file='index.html';
   else if(FILES.has(pathname.slice(1)))file=pathname.slice(1);
   if(!file)return respond(res,404,'Não encontrado');
   if(req.method!=='GET' && req.method!=='HEAD')return respond(res,405,'Método não permitido');
