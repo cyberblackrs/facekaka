@@ -67,7 +67,7 @@
     card.innerHTML = `
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
         <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;border:2px solid #ef4444;flex-shrink:0;background:#1f2937;">
-          <img src="${photo}" alt="" style="width:100%;height:100%;object-fit:cover;filter:blur(9px);transform:scale(1.22);pointer-events:none;" onerror="this.src='/images/avatars/perfil-sem-foto.jpeg'">
+          <img src="${photo}" alt="" style="width:100%;height:100%;object-fit:cover;filter:blur(11px) saturate(1.15) brightness(.8);transform:scale(1.28);pointer-events:none;" onerror="this.src='/images/avatars/perfil-sem-foto.jpeg'">
         </div>
         <div style="min-width:0;flex:1;">
           <div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#f87171;">Sessão prestes a expirar</div>

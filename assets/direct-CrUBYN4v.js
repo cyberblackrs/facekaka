@@ -579,8 +579,8 @@ function Y({ stories: t, onStoryClick: i }) {
                           borderRadius: "50%",
                           clipPath: "circle(50%)",
                           WebkitClipPath: "circle(50%)",
-                          filter: s.isOwn ? "none" : "blur(6px)",
-                          WebkitFilter: s.isOwn ? "none" : "blur(6px)",
+                          filter: s.isOwn ? "none" : "blur(11px) saturate(1.15) brightness(0.82)",
+                          WebkitFilter: s.isOwn ? "none" : "blur(11px) saturate(1.15) brightness(0.82)",
                         },
                         onError: (u) => {
                           const m = u.target;
@@ -594,8 +594,8 @@ function Y({ stories: t, onStoryClick: i }) {
                             else {
                               const f = ((r - 1) % 14) + 1;
                               ((m.src = `/images/avatars/fallback/av-fallback-${f}.jpg`),
-                                (m.style.filter = "blur(5px)"),
-                                (m.style.webkitFilter = "blur(5px)"));
+                                (m.style.filter = "blur(11px) saturate(1.15) brightness(0.82)"),
+                                (m.style.webkitFilter = "blur(11px) saturate(1.15) brightness(0.82)"));
                             }
                         },
                       }),
@@ -790,8 +790,8 @@ function se({ chat: t, onChatClick: i, initialTime: s }) {
                       clipPath: "circle(50%)",
                       WebkitClipPath: "circle(50%)",
                       opacity: 0.8,
-                      filter: "blur(5px)",
-                      WebkitFilter: "blur(5px)",
+                      filter: "blur(11px) saturate(1.15) brightness(0.82)",
+                      WebkitFilter: "blur(11px) saturate(1.15) brightness(0.82)",
                       position: "relative",
                       zIndex: 1,
                     },
@@ -800,8 +800,8 @@ function se({ chat: t, onChatClick: i, initialTime: s }) {
                       !a.src.includes("av-fallback-") &&
                         !a.src.includes("perfil-sem-foto") &&
                         ((a.src = "/images/avatars/perfil-sem-foto.jpeg"),
-                          (a.style.filter = "blur(5px)"),
-                          (a.style.webkitFilter = "blur(5px)"));
+                          (a.style.filter = "blur(11px) saturate(1.15) brightness(0.82)"),
+                          (a.style.webkitFilter = "blur(11px) saturate(1.15) brightness(0.82)"));
                     },
                   }),
                 ],

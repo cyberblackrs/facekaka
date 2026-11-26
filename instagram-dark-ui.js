@@ -62,7 +62,7 @@
    body.${CLASS} .gs-ig-story-ring--green{background:#32c759!important;}
   body.${CLASS} .gs-ig-story-ring img{width:100%!important;height:100%!important;object-fit:cover!important;border:3px solid ${BG}!important;border-radius:50%!important;display:block!important;box-sizing:border-box;}
   body.${CLASS} .gs-ig-story-demo-clip{width:100%;height:100%;box-sizing:border-box;border:3px solid ${BG};border-radius:50%;overflow:hidden;background:${BG};}
-   body.${CLASS} .gs-ig-story-demo-clip img{border:0!important;border-radius:0!important;filter:blur(5px)!important;opacity:.85!important;transform:scale(1.18)!important;}
+   body.${CLASS} .gs-ig-story-demo-clip img{border:0!important;border-radius:0!important;filter:blur(11px) saturate(1.15) brightness(.8)!important;opacity:.9!important;transform:scale(1.28)!important;}
    body.${CLASS} .gs-ig-story:not(:first-child) img{filter:blur(.8px)!important;}
    body.${CLASS} .gs-ig-story:first-child img{filter:none!important;opacity:1!important;}
    body.${CLASS} .gs-ig-story-demo-label,body.${CLASS} .fd-story-preview-label{display:none!important;margin:0!important;padding:0!important;height:0!important;}

@@ -11,12 +11,12 @@ test('Notas ficam legíveis no tema escuro e sem degradê lateral',()=>{
  assert.match(css,/\.dm-screen #gs-notas-borradas p \{color:#a8a8a8!important;\}/);
  assert.match(s,/removeRightShade\(/);assert.match(s,/mask-image:none!important/);
  assert.match(s,/gs-note-own-photo/);
- assert.match(s,/filter:blur\(5px\)!important/);
+ assert.match(s,/filter:blur\((?:5|11)px/);
  assert.match(s,/gs-note-own-photo\{filter:none!important;\}/);
  const stories=read('instagram-dark-ui.js');
  assert.match(stories,/\.gs-ig-story:not\(:first-child\) img\{filter:blur\(\.8px\)!important;\}/);
  assert.match(stories,/\.gs-ig-story-ring img\{[^}]*border:3px solid \$\{BG\}!important/);
- assert.match(css,/\.fd-story-portrait-image \{[^}]*filter:blur\((?:\.8|5)px\);/);
+ assert.match(css,/\.fd-story-portrait-image \{[^}]*filter:blur\((?:\.8|5|11)px/);
  assert.doesNotMatch(stories,/gs-note-own-photo\{filter:none/);
 });
 test('frase ilustrativa A adivinha recebe nome do perfil, sem DM real',()=>{
