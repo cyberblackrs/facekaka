@@ -2464,7 +2464,10 @@ function ut({ config: t }) {
                 b = String(o.getHours()).padStart(2, "0"),
                 v = String(o.getMinutes()).padStart(2, "0"),
                 hm = `${b}:${v}`,
-                diffDays = Math.floor((Date.now() - tsMs) / (24 * 60 * 60 * 1e3));
+                todayStart = new Date();
+            todayStart.setHours(0, 0, 0, 0);
+            const msgDayStart = new Date(o.getFullYear(), o.getMonth(), o.getDate()).getTime(),
+                diffDays = Math.round((todayStart.getTime() - msgDayStart) / (24 * 60 * 60 * 1e3));
             if (diffDays <= 0) return hm;
             if (diffDays === 1) return `ONTEM, ${hm}`;
             return `${diffDays} dias atrás, ${hm}`;
