@@ -1138,17 +1138,29 @@ function oe(t, i) {
       d === 1 &&
       s.push({
         username: "swing_special",
-        displayName: "Swi*******",
+        displayName: "S******",
         profilePic: "/images/screenshots/StorySwing.png",
         hasStory: !0,
         label: "O vontde fudê a 3 😈",
       }));
   });
+  const extraNotes = [
+    { username: "r_note1", displayName: "R******", profilePic: "/assets-local/stories/story-14.jpg", label: "Saudade de ontem 🤫" },
+    { username: "k_note2", displayName: "K******", profilePic: "/assets-local/stories/story-15.jpg", isMusicNote: !0, music: c[0] },
+    { username: "t_note3", displayName: "T******", profilePic: "/assets-local/stories/story-16.jpg", label: "Mais tarde tem 😈" },
+    { username: "d_note4", displayName: "D******", profilePic: "/assets-local/notes/pessoa-06.jpg", label: "Só quem sabe entende 👀" },
+    { username: "v_note5", displayName: "V******", profilePic: "/assets-local/notes/pessoa-07.jpg", isMusicNote: !0, music: c[2] },
+    { username: "n_note6", displayName: "N******", profilePic: "/assets-local/notes/pessoa-08.jpg", label: "Alguém on?" },
+  ];
+  for (const en of extraNotes) {
+    if (s.length >= 12) break;
+    s.push({ ...en, hasStory: !0 });
+  }
   const l = "📍💦";
   return (
     s.push({
       username: "marc_special",
-      displayName: "Marc*******",
+      displayName: "M******",
       profilePic: "/images/screenshots/playboy.jpg",
       hasStory: !0,
       label: l,
@@ -1173,7 +1185,7 @@ function le(t, i) {
         id: "chat_17",
         displayName: I(t[0]?.username || "usuario"),
         profilePic:
-          t[0]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+          t[0]?.profile_pic_url || "/assets-local/stories/story-06.jpg",
         lastMessage: "Encaminhou um reel de jonas.milgrau",
         time: " • 33 min",
         isUnread: !0,
@@ -1184,7 +1196,7 @@ function le(t, i) {
         id: "chat_18",
         displayName: I(t[1]?.username || "usuario"),
         profilePic:
-          t[1]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+          t[1]?.profile_pic_url || "/assets-local/stories/story-07.jpg",
         lastMessage: "Blz depois a gente se fala",
         time: " • 2 h",
         isUnread: !1,
@@ -1303,7 +1315,7 @@ function le(t, i) {
         id: "chat_28",
         displayName: I(t[10]?.username || "s_real"),
         profilePic:
-          t[10]?.profile_pic_url || "/assets-local/notes/pessoa-01.jpg",
+          t[10]?.profile_pic_url || "/assets-local/stories/story-01.jpg",
         lastMessage: "Já tô livre hoje depois das 21h 😈",
         time: " • 3 d",
         isUnread: !0,
@@ -1314,7 +1326,7 @@ function le(t, i) {
         id: "chat_29",
         displayName: I(t[11]?.username || "m_priv"),
         profilePic:
-          t[11]?.profile_pic_url || "/assets-local/notes/pessoa-02.jpg",
+          t[11]?.profile_pic_url || "/assets-local/stories/story-02.jpg",
         lastMessage: "Vai sair hoje?",
         time: " • 4 d",
         isUnread: !1,
@@ -1325,7 +1337,7 @@ function le(t, i) {
         id: "chat_30",
         displayName: I(t[12]?.username || "p_ofc"),
         profilePic:
-          t[12]?.profile_pic_url || "/assets-local/notes/pessoa-03.jpg",
+          t[12]?.profile_pic_url || "/assets-local/stories/story-03.jpg",
         lastMessage: "Não esqueci daquela noite ❤️",
         time: " • 5 d",
         isUnread: !1,
@@ -1336,7 +1348,7 @@ function le(t, i) {
         id: "chat_31",
         displayName: I(t[13]?.username || "n_real"),
         profilePic:
-          t[13]?.profile_pic_url || "/assets-local/notes/pessoa-04.jpg",
+          t[13]?.profile_pic_url || "/assets-local/stories/story-04.jpg",
         lastMessage: "Que horas a gente se encontra?",
         time: " • 6 d",
         isUnread: !0,
@@ -1347,7 +1359,7 @@ function le(t, i) {
         id: "chat_32",
         displayName: I(t[14]?.username || "v_priv"),
         profilePic:
-          t[14]?.profile_pic_url || "/assets-local/notes/pessoa-05.jpg",
+          t[14]?.profile_pic_url || "/assets-local/stories/story-05.jpg",
         lastMessage: "Me liga quando puder ❤️",
         time: " • 1 sem",
         isUnread: !1,
