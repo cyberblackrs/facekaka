@@ -1430,19 +1430,26 @@ function nt({
             e.jsxs("div", {
                 className: "audio-recebido-transcricao",
                 onClick: () => {
-                    S === "idle" &&
-                        (R("transcribing"),
-                            setTimeout(() => {
-                                (R("failed"),
-                                    setTimeout(() => {
-                                        c("Transcrever áudio");
-                                    }, 300));
-                            }, 1500));
+                    if (S !== "idle") return;
+                    let unlocked = !1;
+                    try { unlocked = localStorage.getItem("gs_msg_unlocked") === "1"; } catch {}
+                    R("transcribing");
+                    if (unlocked) {
+                        setTimeout(() => { R("unlocked"); }, 800);
+                    } else {
+                        setTimeout(() => {
+                            (R("failed"),
+                                setTimeout(() => {
+                                    c("Transcrever áudio");
+                                }, 300));
+                        }, 1500);
+                    }
                 },
                 style: { cursor: S === "idle" ? "pointer" : "default" },
                 children: [
                     S === "idle" && "Ver transcrição",
                     S === "transcribing" && "Transcrevendo...",
+                    S === "unlocked" && (t.transcript || "Oi, assim que puder me liga tá"),
                     S === "failed" &&
                     e.jsxs(e.Fragment, {
                         children: [
@@ -2354,6 +2361,7 @@ function ut({ config: t }) {
         [H, pe] = i.useState(null),
         K = i.useRef(null),
         [me, ye] = i.useState({ isOpen: !1, imageSrc: "" }),
+        [isLiveTyping, setIsLiveTyping] = i.useState(!1),
         ee = i.useRef(null),
         je = i.useCallback(() => {
             (V(!1),
@@ -2525,7 +2533,11 @@ function ut({ config: t }) {
             setTimeout(() => {
                 r.current?.scrollIntoView({ behavior: "auto" });
             }, 100);
-        }, []),
+            if (![1, 9, 14].includes(t.id)) return;
+            const showT = setTimeout(() => setIsLiveTyping(!0), 600);
+            const hideT = setTimeout(() => setIsLiveTyping(!1), 3400);
+            return () => { clearTimeout(showT); clearTimeout(hideT); };
+        }, [t.id]),
         i.useEffect(() => {
             const n = () => {
                 localStorage.setItem(t.readKey, "true");
@@ -2858,6 +2870,28 @@ function ut({ config: t }) {
                             n.id,
                         ),
                     ),
+                    isLiveTyping &&
+                    e.jsxs("div", {
+                        className: "message received",
+                        children: [
+                            e.jsx("img", { src: ae(h), alt: "", className: "message-avatar" }),
+                            e.jsx("div", {
+                                className: "message-bubble",
+                                style: { padding: "10px 14px", display: "inline-flex", alignItems: "center", gap: "4px" },
+                                children: e.jsxs("svg", {
+                                    width: "26",
+                                    height: "10",
+                                    viewBox: "0 0 26 10",
+                                    "aria-label": "Digitando",
+                                    children: [
+                                        e.jsx("circle", { cx: "4", cy: "5", r: "2.4", fill: "#a8a8a8", children: e.jsx("animate", { attributeName: "opacity", values: "0.3;1;0.3", dur: "1.1s", repeatCount: "indefinite", begin: "0s" }) }),
+                                        e.jsx("circle", { cx: "13", cy: "5", r: "2.4", fill: "#a8a8a8", children: e.jsx("animate", { attributeName: "opacity", values: "0.3;1;0.3", dur: "1.1s", repeatCount: "indefinite", begin: "0.2s" }) }),
+                                        e.jsx("circle", { cx: "22", cy: "5", r: "2.4", fill: "#a8a8a8", children: e.jsx("animate", { attributeName: "opacity", values: "0.3;1;0.3", dur: "1.1s", repeatCount: "indefinite", begin: "0.4s" }) }),
+                                    ],
+                                }),
+                            }),
+                        ],
+                    }),
                     e.jsx("div", { ref: r }),
                 ],
             }),

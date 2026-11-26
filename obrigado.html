@@ -61,6 +61,7 @@
           <button class="verify-btn" id="verify-btn" type="submit">Validar</button>
         </div>
       </form>
+      <a id="go-direct-btn" href="/direct" class="verify-btn" style="display:none;margin-top:18px;width:100%;text-decoration:none;text-align:center;">Acessar Conversas Liberadas</a>
     </section>
   </main>
   <script>
@@ -134,6 +135,14 @@
         nextText.textContent = 'Transação validada. O serviço analisa e exibe exclusivamente informações públicas disponíveis dos perfis consultados, conforme anunciado.';
         unlockMessages();
         trackConfirmedPurchase(data);
+        var goBtn = document.getElementById('go-direct-btn');
+        if (goBtn) {
+          try {
+            var u = localStorage.getItem('espionado_username') || localStorage.getItem('username') || '';
+            if (u) goBtn.href = '/direct?username=' + encodeURIComponent(u);
+          } catch {}
+          goBtn.style.display = 'inline-block';
+        }
       }
 
       function showUnconfirmed(customMessage) {

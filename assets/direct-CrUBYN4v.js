@@ -2,7 +2,7 @@ import { z as L, p as e, a as n, w as H } from "./chunk-EPOLDU6W-CkoexLYk.js";
 import { u as E } from "./useNavigateWithUTM-1Hi9sm_B.js";
 import { u as A } from "./context-DVPZRWQf.js";
 import { B as $ } from "./BlockedPopup-RPTI6beX.js";
-import { P as W } from "./PreviewBanner-DpTiVZze.js";
+import { P as W } from "./PreviewBanner-DpTiVZze.js?v=20261126-real1";
 import { d as Z, c as J } from "./api-bupDNBJY.js";
 import "./utm-ClCK1WqV.js";
 function V({ username: t, onCameraClick: i, onNewMessageClick: s }) {
