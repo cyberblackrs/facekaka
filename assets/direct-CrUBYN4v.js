@@ -18,6 +18,9 @@ function V({ username: t, onCameraClick: i, onNewMessageClick: s }) {
       "dm-header flex items-center justify-between px-4 py-3 border-b border-gray-800",
     style: {
       backgroundColor: "#0c1014",
+      position: "sticky",
+      top: 0,
+      zIndex: 100,
     },
     children: [
       e.jsxs("div", {

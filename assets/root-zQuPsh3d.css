@@ -7060,7 +7060,7 @@ body:has(.fd-screen, .dm-screen, .chat-area, .notif-page) {
 .ig-preview-banner>div>div>p:first-child {padding-right:76px;}
 .dm-screen,.dm-panel,.dm-header,.dm-right-panel,.dm-placeholder {background:#0c1014;color:#f5f5f5;}
 .dm-panel {min-width:0;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;}
-.dm-header {position:sticky;flex-shrink:0;min-height:60px;top:0;left:auto;right:auto;border:0;z-index:10;}
+.dm-header {position:sticky!important;flex-shrink:0;min-height:60px;top:0;left:auto;right:auto;border:0;z-index:100!important;background:#0c1014!important;}
 .dm-panel>div {flex-shrink:0;}
 .dm-header h1 {max-width:calc(100vw - 160px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .dm-header svg {color:#f5f5f5;}
@@ -7069,7 +7069,7 @@ body:has(.fd-screen, .dm-screen, .chat-area, .notif-page) {
 .dm-screen .chat-item {background:transparent!important;min-width:0;}
 .dm-screen .chat-item-name {color:#f5f5f5!important;}
 .dm-screen .chat-message-text,.dm-screen .chat-time {color:#a8a8a8!important;}
-.dm-screen #gs-notas-borradas {background:#0c1014!important;isolation:isolate;}
+.dm-screen #gs-notas-borradas {background:#0c1014!important;isolation:isolate;position:relative;z-index:1;}
 .dm-screen #gs-notas-borradas p {color:#a8a8a8!important;}
 .dm-screen .ig-preview-banner {bottom:0!important;background:#181c20!important;border-radius:0;left:0!important;right:0!important;z-index:20!important;box-shadow:none!important;}
 .dm-screen .dm-panel {padding-bottom:110px;}
