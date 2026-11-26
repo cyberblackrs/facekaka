@@ -574,6 +574,8 @@ function Y({ stories: t, onStoryClick: i }) {
                           borderRadius: "50%",
                           clipPath: "circle(50%)",
                           WebkitClipPath: "circle(50%)",
+                          filter: s.isOwn ? "none" : "blur(6px)",
+                          WebkitFilter: s.isOwn ? "none" : "blur(6px)",
                         },
                         onError: (u) => {
                           const m = u.target;
