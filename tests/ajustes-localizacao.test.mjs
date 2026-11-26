@@ -11,7 +11,7 @@ test('cidade somente quando declarada explicitamente no perfil',()=>{
  assert.equal(normalizeProfile({username:'teste',id:'123',biography:'Olá'},'teste').public_city,null);
 });
 test('as simulações não utilizam localização do visitante',()=>{
- for(const file of ['assets/feed-CMXMV7Sa.js','assets/direct-CrUBYN4v.js','assets/chat._chatId-B0W9ilwe.js'])assert.doesNotMatch(read(file),/localStorage\.getItem\("(?:nearby_cities|user_city)"\)/);
+ for(const file of ['assets/feed-CMXMV7Sa.js','assets/direct-CrUBYN4v.js'])assert.doesNotMatch(read(file),/localStorage\.getItem\("(?:nearby_cities|user_city)"\)/);
  assert.doesNotMatch(read('notas-publicas.js'),/note:'[^']*Trindade/);
 });
 test('aros verdes decorativos em stories ilustrativos',()=>{

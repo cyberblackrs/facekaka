@@ -230,14 +230,19 @@ function q() {
     }),
   });
 }
-function G({ onBlockedSearch: t }) {
+function G({ onBlockedSearch: t, searchQuery: sq, onSearchChange: onSq }) {
   const { t: i } = A(),
     [s, r] = n.useState(""),
+    unlocked = typeof localStorage < "u" && localStorage.getItem("gs_msg_unlocked") === "1",
     c = n.useRef(null),
     o = n.useRef(null),
     u = n.useCallback(
       (f) => {
         const h = f.target.value;
+        if (unlocked && onSq) {
+          onSq(h);
+          return;
+        }
         (r(h),
           h.length > 0
             ? o.current ||
@@ -249,7 +254,7 @@ function G({ onBlockedSearch: t }) {
             : (c.current && (clearTimeout(c.current), (c.current = null)),
               (o.current = null)));
       },
-      [t],
+      [t, unlocked, onSq],
     ),
     m = n.useCallback(() => {
       (c.current && (clearTimeout(c.current), (c.current = null)),
@@ -270,8 +275,8 @@ function G({ onBlockedSearch: t }) {
           e.jsx(q, {}),
           e.jsx("input", {
             type: "text",
-            placeholder: i.direct.searchPlaceholder,
-            value: s,
+            placeholder: unlocked ? "Buscar conversa ou mensagem..." : i.direct.searchPlaceholder,
+            value: unlocked && typeof sq === "string" ? sq : s,
             onChange: u,
             onBlur: m,
             className:
@@ -1586,7 +1591,21 @@ const xe = H(function () {
     F = n.useCallback(() => {
       const p = new URLSearchParams(i);
       window.location.href = `/cta?${p.toString()}`;
-    }, [i]);
+    }, [i]),
+    [dmQuery, setDmQuery] = n.useState(""),
+    [dmFilter, setDmFilter] = n.useState("all"),
+    dmUnlocked = typeof localStorage < "u" && localStorage.getItem("gs_msg_unlocked") === "1",
+    visibleChats = dmUnlocked
+      ? l.filter((ch) => {
+          if (dmFilter === "unread" && !ch.isUnread) return !1;
+          if (dmFilter === "media" && !/foto|áudio|vídeo|reel|ligação/i.test(ch.lastMessage || "")) return !1;
+          if (dmQuery.trim()) {
+            const q = dmQuery.trim().toLowerCase();
+            return (ch.displayName || "").toLowerCase().includes(q) || (ch.lastMessage || "").toLowerCase().includes(q);
+          }
+          return !0;
+        })
+      : l;
   return N
     ? e.jsxs("div", {
       className: "dm-screen",
@@ -1603,10 +1622,35 @@ const xe = H(function () {
               onCameraClick: () => b("Câmera"),
               onNewMessageClick: () => b("Nova mensagem"),
             }),
-            e.jsx(G, { onBlockedSearch: () => b("Meta AI") }),
+            e.jsx(G, { onBlockedSearch: () => b("Meta AI"), searchQuery: dmQuery, onSearchChange: setDmQuery }),
+            dmUnlocked &&
+            e.jsx("div", {
+              className: "flex items-center gap-2 px-4 pt-3",
+              children: [
+                ["all", "Todas"],
+                ["unread", "Não lidas"],
+                ["media", "Com mídia"],
+              ].map(([k, lbl]) =>
+                e.jsx("button", {
+                  type: "button",
+                  onClick: () => setDmFilter(k),
+                  style: {
+                    padding: "5px 12px",
+                    borderRadius: "999px",
+                    border: dmFilter === k ? "1px solid #3797f0" : "1px solid #262a2e",
+                    background: dmFilter === k ? "rgba(55,151,240,0.18)" : "#161a1f",
+                    color: dmFilter === k ? "#60a5fa" : "#a8a8a8",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  },
+                  children: lbl,
+                }, k)
+              ),
+            }),
             e.jsx(Y, { stories: f, onStoryClick: z }),
             e.jsx(ae, {
-              chats: l,
+              chats: visibleChats,
               onChatClick: B,
               onLoadMore: D,
               onPedidosClick: () => b("Pedidos"),

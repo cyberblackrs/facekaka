@@ -70,10 +70,28 @@ const Ve = {
         { id: "13", type: "date", direction: "system", content: "ONTEM, 21:34" },
         { id: "14", type: "text", direction: "received", content: "Amor" },
         {
+            id: "14b",
+            type: "forwarded_story",
+            direction: "received",
+            isReel: !0,
+            hasPlayButton: !0,
+            storyUsername: "reels_br",
+            storyAvatar: "/assets-local/notes/pessoa-02.jpg",
+            imageSrc: "/assets-local/reels/reel-01.jpg",
+            reaction: "😂",
+        },
+        {
             id: "15",
             type: "text",
             direction: "received",
             content: "Ta podendo falar?",
+        },
+        {
+            id: "15b",
+            type: "view_once",
+            direction: "received",
+            imageSrc: "/assets-local/view-once/vo-01.jpg",
+            label: "Foto",
         },
         {
             id: "16",
@@ -1201,6 +1219,40 @@ function it({
             [S],
         );
     if (!t) return null;
+    if (isMsgUnlocked()) {
+        return e.jsxs("div", {
+            ref: T,
+            className: "image-fullscreen-modal active",
+            onClick: R,
+            style: { background: "rgba(0,0,0,0.96)", display: "flex", alignItems: "center", justifyContent: "center" },
+            children: [
+                e.jsx("img", {
+                    src: a,
+                    alt: "",
+                    style: { maxWidth: "94vw", maxHeight: "86vh", objectFit: "contain", borderRadius: "12px", filter: "none" },
+                }),
+                e.jsx("button", {
+                    type: "button",
+                    className: "image-fullscreen-back",
+                    onClick: S,
+                    "aria-label": "Voltar",
+                    children: e.jsx("svg", {
+                        width: "24",
+                        height: "24",
+                        viewBox: "0 0 24 24",
+                        fill: "none",
+                        children: e.jsx("path", {
+                            d: "M15 18L9 12L15 6",
+                            stroke: "#F9F9F9",
+                            strokeWidth: "2",
+                            strokeLinecap: "round",
+                            strokeLinejoin: "round",
+                        }),
+                    }),
+                }),
+            ],
+        });
+    }
     const C = [
         "image-fullscreen-bg",
         u === "revealing" ? "revealing" : "",
@@ -1611,7 +1663,52 @@ function at({ message: t, onBlockedAction: a, onReelClick: s }) {
         ],
     });
 }
+function vo({ message: t, onOpenFullscreen: a, onBlockedAction: s }) {
+    const unlocked = isMsgUnlocked();
+    return e.jsxs("button", {
+        type: "button",
+        onClick: () =>
+            unlocked
+                ? a(t.imageSrc || "/assets-local/view-once/vo-01.jpg", t.id || "vo")
+                : s("Abrir foto de visualização única"),
+        style: {
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "10px",
+            padding: "9px 14px",
+            borderRadius: "20px",
+            border: "1px solid rgba(255,255,255,0.16)",
+            background: "linear-gradient(135deg, rgba(131,58,180,0.22), rgba(55,151,240,0.22))",
+            color: "#F9F9F9",
+            fontSize: "14px",
+            fontWeight: 500,
+            cursor: "pointer",
+        },
+        children: [
+            e.jsxs("span", {
+                style: {
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "50%",
+                    border: "1.8px dashed #60a5fa",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    color: "#93c5fd",
+                    flexShrink: 0,
+                },
+                children: "1",
+            }),
+            e.jsx("span", {
+                children: unlocked ? `${t.label || "Foto"} • Tocar para abrir` : (t.label || "Foto"),
+            }),
+        ],
+    });
+}
 function rt({ message: t, onOpenFullscreen: a, chatId: s }) {
+    const unlocked = isMsgUnlocked();
     if (t.isPackImages && t.packImages)
         return e.jsxs("div", {
             className: "message-video-pack",
@@ -1625,8 +1722,8 @@ function rt({ message: t, onOpenFullscreen: a, chatId: s }) {
                             onClick: () => a(c, f),
                             style: { cursor: "pointer" },
                             children: [
-                                e.jsx("img", { src: c, alt: "", className: "pack-blurred" }),
-                                e.jsx("div", {
+                                e.jsx("img", { src: c, alt: "", className: unlocked ? "" : "pack-blurred", style: unlocked ? { width: "100%", height: "100%", objectFit: "cover", borderRadius: "12px", filter: "none" } : void 0 }),
+                                !unlocked && e.jsx("div", {
                                     className: "pack-sensitive-overlay",
                                     children: e.jsx("div", {
                                         className: "pack-sensitive-content",
@@ -1657,9 +1754,10 @@ function rt({ message: t, onOpenFullscreen: a, chatId: s }) {
                     e.jsx("img", {
                         src: t.imageSrc,
                         alt: "",
-                        className: "video-blurred",
+                        className: unlocked ? "" : "video-blurred",
+                        style: unlocked ? { width: "100%", height: "100%", objectFit: "cover", borderRadius: "12px", filter: "none" } : void 0,
                     }),
-                    e.jsx("div", {
+                    !unlocked && e.jsx("div", {
                         className: "video-sensitive-overlay",
                         children: e.jsx("div", {
                             className: "video-sensitive-content",
@@ -1815,6 +1913,8 @@ function ot({
                             t.type === "image" &&
                             t.isSensitive &&
                             e.jsx(rt, { message: t, onOpenFullscreen: y, chatId: x }),
+                            t.type === "view_once" &&
+                            e.jsx(vo, { message: t, onOpenFullscreen: y, onBlockedAction: s }),
                             t.type === "forwarded_story" &&
                             e.jsx(at, { message: t, onBlockedAction: s, onReelClick: f }),
                             t.reaction &&
@@ -2264,31 +2364,91 @@ function unlockedContinuation(msg, seed) {
     for (let i = 0; i < raw.length; i++) h = (h * 31 + raw.charCodeAt(i)) >>> 0;
     return UNLOCKED_SNIPPETS[h % UNLOCKED_SNIPPETS.length];
 }
-const EXTRA_REAL_HISTORY = [
-    { id: "eh_d1", type: "date", direction: "system", content: "3 semanas atrás, 22:14" },
-    { id: "eh_1", direction: "received", type: "text", content: "Oi, tá por aí ainda?" },
-    { id: "eh_2", direction: "sent", type: "text", content: "Tô sim, quase dormindo já. Que foi?" },
-    { id: "eh_3", direction: "received", type: "text", content: "Nada, só lembrei daquela noite e não consegui dormir" },
-    { id: "eh_4", direction: "sent", type: "audio", audioDuration: "0:19" },
-    { id: "eh_5", direction: "received", type: "text", content: "Para de falar essas coisas por áudio kkkk", reaction: "❤️" },
-    { id: "eh_6", direction: "sent", type: "text", content: "Mas é verdade, vc sabe que eu não minto" },
-    { id: "eh_7", direction: "received", type: "heart" },
-    { id: "eh_d2", type: "date", direction: "system", content: "2 semanas atrás, 00:38" },
-    { id: "eh_8", direction: "received", type: "text", content: "Acabei de chegar em casa" },
-    { id: "eh_9", direction: "sent", type: "text", content: "Ainda bem, tava preocupado já" },
-    { id: "eh_10", direction: "received", type: "text", content: "Sério? Que bom saber disso" },
-    { id: "eh_11", direction: "sent", type: "text", content: "Vc sabe que eu me importo muito com vc" },
-    { id: "eh_12", direction: "received", type: "audio", audioDuration: "0:27" },
-    { id: "eh_13", direction: "sent", type: "text", content: "A gente precisa repetir aquele rolê logo" },
-    { id: "eh_14", direction: "received", type: "text", content: "Com certeza, só marcar o dia", reaction: "🔥" },
-    { id: "eh_d3", type: "date", direction: "system", content: "10 dias atrás, 19:50" },
-    { id: "eh_15", direction: "sent", type: "text", content: "Apagou as mensagens de ontem né?" },
-    { id: "eh_16", direction: "received", type: "text", content: "Apaguei tudo sim, pode ficar em paz" },
+const EXTRA_HISTORY_PAGES = [
+    [
+        { id: "eh_d1", type: "date", direction: "system", content: "3 semanas atrás, 22:14" },
+        { id: "eh_1", direction: "received", type: "text", content: "Oi, tá por aí ainda?" },
+        { id: "eh_2", direction: "sent", type: "text", content: "Tô sim, quase dormindo já. Que foi?" },
+        { id: "eh_3", direction: "received", type: "text", content: "Nada, só lembrei daquela noite e não consegui dormir" },
+        { id: "eh_4", direction: "sent", type: "audio", audioDuration: "0:19" },
+        { id: "eh_5", direction: "received", type: "text", content: "Para de falar essas coisas por áudio kkkk", reaction: "❤️" },
+        { id: "eh_6", direction: "sent", type: "text", content: "Mas é verdade, vc sabe que eu não minto" },
+        { id: "eh_6b", direction: "received", type: "view_once", imageSrc: "/assets-local/view-once/vo-02.jpg", label: "Foto" },
+        { id: "eh_7", direction: "received", type: "heart" },
+        { id: "eh_d2", type: "date", direction: "system", content: "2 semanas atrás, 00:38" },
+        { id: "eh_8", direction: "received", type: "text", content: "Acabei de chegar em casa" },
+        { id: "eh_9", direction: "sent", type: "text", content: "Ainda bem, tava preocupado já" },
+        { id: "eh_10", direction: "received", type: "text", content: "Sério? Que bom saber disso" },
+        { id: "eh_11", direction: "sent", type: "text", content: "Vc sabe que eu me importo muito com vc" },
+        { id: "eh_11b", direction: "received", type: "forwarded_story", isReel: !0, hasPlayButton: !0, storyUsername: "humor_diario", storyAvatar: "/assets-local/notes/pessoa-03.jpg", imageSrc: "/assets-local/reels/reel-02.jpg", reaction: "😂" },
+        { id: "eh_12", direction: "received", type: "audio", audioDuration: "0:27" },
+        { id: "eh_13", direction: "sent", type: "text", content: "A gente precisa repetir aquele rolê logo" },
+        { id: "eh_14", direction: "received", type: "text", content: "Com certeza, só marcar o dia", reaction: "🔥" },
+        { id: "eh_d3", type: "date", direction: "system", content: "10 dias atrás, 19:50" },
+        { id: "eh_15", direction: "sent", type: "text", content: "Apagou as mensagens de ontem né?" },
+        { id: "eh_16", direction: "received", type: "text", content: "Apaguei tudo sim, pode ficar em paz" },
+    ],
+    [
+        { id: "eh2_d1", type: "date", direction: "system", content: "1 mês atrás, 23:42" },
+        { id: "eh2_1", direction: "received", type: "text", content: "Não dá pra parar de pensar naquela foto" },
+        { id: "eh2_2", direction: "sent", type: "text", content: "Qual delas? kkkk" },
+        { id: "eh2_3", direction: "received", type: "text", content: "Vc sabe muito bem qual 👀" },
+        { id: "eh2_4", direction: "sent", type: "view_once", imageSrc: "/assets-local/view-once/vo-03.jpg", label: "Foto" },
+        { id: "eh2_5", direction: "received", type: "text", content: "MDS 😳 apaga isso antes que alguém veja" },
+        { id: "eh2_6", direction: "sent", type: "text", content: "Relaxa, é visualização única kkkk" },
+        { id: "eh2_7", direction: "received", type: "audio", audioDuration: "0:34" },
+        { id: "eh2_8", direction: "sent", type: "text", content: "Amanhã a gente se vê no mesmo lugar?" },
+        { id: "eh2_9", direction: "received", type: "text", content: "Fechado, só me manda msg qd sair", reaction: "❤️" },
+        { id: "eh2_10", direction: "received", type: "forwarded_story", isReel: !0, hasPlayButton: !0, storyUsername: "noite.vip", storyAvatar: "/assets-local/notes/pessoa-05.jpg", imageSrc: "/assets-local/reels/reel-03.jpg" },
+        { id: "eh2_11", direction: "sent", type: "text", content: "Nossa simmm kkkkk exatamente isso" },
+    ],
+    [
+        { id: "eh3_d1", type: "date", direction: "system", content: "2 meses atrás, 01:18" },
+        { id: "eh3_1", direction: "sent", type: "text", content: "Acordada?" },
+        { id: "eh3_2", direction: "received", type: "text", content: "Tô sim, insônia braba" },
+        { id: "eh3_3", direction: "sent", type: "forwarded_story", isReel: !0, hasPlayButton: !0, storyUsername: "vibes_madrugada", storyAvatar: "/assets-local/notes/pessoa-06.jpg", imageSrc: "/assets-local/reels/reel-04.jpg" },
+        { id: "eh3_4", direction: "received", type: "text", content: "Paraaa kkkkk eu lembrei da gente na hora", reaction: "🥹" },
+        { id: "eh3_5", direction: "sent", type: "audio", audioDuration: "0:41" },
+        { id: "eh3_6", direction: "received", type: "text", content: "Sua voz assim de madrugada não ajuda nada" },
+        { id: "eh3_7", direction: "received", type: "view_once", imageSrc: "/assets-local/view-once/vo-04.jpg", label: "Foto" },
+        { id: "eh3_8", direction: "sent", type: "text", content: "Caramba... sem palavras 😍" },
+        { id: "eh3_9", direction: "received", type: "heart" },
+        { id: "eh3_10", direction: "sent", type: "text", content: "Sexta não me escapa" },
+    ],
 ];
-function lt({ msg: t, isUnlocked: unlocked, userPhoto: uPhoto, idx: idx }) {
+const EXTRA_REAL_HISTORY = EXTRA_HISTORY_PAGES[0];
+function lt({ msg: t, isUnlocked: unlocked, userPhoto: uPhoto, idx: idx, onOpenFullscreen: onOpenFs, onBlockedAction: onBlocked, onReelClick: onReel }) {
     const a = i.useRef(ke());
     if (t.type === "date")
         return e.jsx("div", { className: "message-date", children: t.content });
+    if (t.type === "view_once")
+        return e.jsxs("div", {
+            className: `message ${t.direction} ${unlocked ? "" : "blurred-history-msg"}`,
+            children: [
+                t.direction === "received" &&
+                (unlocked && uPhoto
+                    ? e.jsx("img", { src: ae(uPhoto), alt: "", className: "message-avatar" })
+                    : e.jsx("div", { className: "message-avatar", style: { width: 28, height: 28, borderRadius: "50%", background: "#333", flexShrink: 0 } })),
+                e.jsx("div", {
+                    className: "message-bubble",
+                    children: e.jsx(vo, { message: t, onOpenFullscreen: onOpenFs || (() => {}), onBlockedAction: onBlocked || (() => {}) }),
+                }),
+            ],
+        });
+    if (t.type === "forwarded_story")
+        return e.jsxs("div", {
+            className: `message ${t.direction} ${unlocked ? "" : "blurred-history-msg"}`,
+            children: [
+                t.direction === "received" &&
+                (unlocked && uPhoto
+                    ? e.jsx("img", { src: ae(uPhoto), alt: "", className: "message-avatar" })
+                    : e.jsx("div", { className: "message-avatar", style: { width: 28, height: 28, borderRadius: "50%", background: "#333", flexShrink: 0 } })),
+                e.jsx("div", {
+                    className: "message-bubble",
+                    children: e.jsx(at, { message: t, onBlockedAction: onBlocked || (() => {}), onReelClick: onReel || (() => {}) }),
+                }),
+            ],
+        });
     if (t.type === "heart")
         return e.jsxs("div", {
             className: `message ${t.direction} heart ${unlocked ? "" : "blurred-history-msg"}`,
@@ -2424,6 +2584,7 @@ function ut({ config: t }) {
         K = i.useRef(null),
         [me, ye] = i.useState({ isOpen: !1, imageSrc: "" }),
         [isLiveTyping, setIsLiveTyping] = i.useState(!1),
+        [historyPages, setHistoryPages] = i.useState(1),
         ee = i.useRef(null),
         je = i.useCallback(() => {
             (V(!1),
@@ -2445,6 +2606,10 @@ function ut({ config: t }) {
                     }, 350));
         }, [G]),
         Ne = i.useCallback((n) => {
+            if (isMsgUnlocked()) {
+                ye({ isOpen: !0, imageSrc: n });
+                return;
+            }
             (ye({ isOpen: !0, imageSrc: n }),
                 setTimeout(() => {
                     (ye({ isOpen: !1, imageSrc: "" }),
@@ -2853,11 +3018,38 @@ function ut({ config: t }) {
                 id: "chatMessages",
                 ref: c,
                 children: [
+                    isMsgUnlocked() &&
+                    e.jsx("div", {
+                        style: { display: "flex", justifyContent: "center", padding: "12px 0 6px" },
+                        children: historyPages < EXTRA_HISTORY_PAGES.length
+                            ? e.jsx("button", {
+                                type: "button",
+                                onClick: () => setHistoryPages((p) => Math.min(EXTRA_HISTORY_PAGES.length, p + 1)),
+                                style: {
+                                    background: "#1c2026",
+                                    color: "#60a5fa",
+                                    border: "1px solid rgba(96,165,250,0.28)",
+                                    borderRadius: "999px",
+                                    padding: "7px 16px",
+                                    fontSize: "12px",
+                                    fontWeight: 600,
+                                    cursor: "pointer",
+                                },
+                                children: "Carregar mensagens anteriores",
+                            })
+                            : e.jsx("span", {
+                                style: { fontSize: "11px", color: "#71767b" },
+                                children: "Início do histórico disponível",
+                            }),
+                    }),
                     e.jsx("div", {
                         ref: y,
                         className: isMsgUnlocked() ? "" : "blurred-history-section",
-                        children: (isMsgUnlocked() ? [...EXTRA_REAL_HISTORY, ...Se] : Se).map((n, idx) =>
-                            e.jsx(lt, { msg: n, isUnlocked: isMsgUnlocked(), userPhoto: h, idx: idx }, `blur-${n.id}`)
+                        children: (isMsgUnlocked()
+                            ? [...EXTRA_HISTORY_PAGES.slice(0, historyPages).reverse().flat(), ...Se]
+                            : Se
+                        ).map((n, idx) =>
+                            e.jsx(lt, { msg: n, isUnlocked: isMsgUnlocked(), userPhoto: h, idx: idx, onOpenFullscreen: Ie, onBlockedAction: L, onReelClick: Ne }, `blur-${n.id}`)
                         ),
                     }),
                     ve.map((n, l) => {
@@ -3390,6 +3582,7 @@ function ut({ config: t }) {
             }),
             me.isOpen &&
             e.jsxs("div", {
+                onClick: () => isMsgUnlocked() && ye({ isOpen: !1, imageSrc: "" }),
                 style: {
                     position: "fixed",
                     inset: 0,
@@ -3401,6 +3594,27 @@ function ut({ config: t }) {
                     animation: "reelFullscreenIn 0.15s ease-out",
                 },
                 children: [
+                    isMsgUnlocked() &&
+                    e.jsx("button", {
+                        type: "button",
+                        onClick: (ev) => { ev.stopPropagation(); ye({ isOpen: !1, imageSrc: "" }); },
+                        "aria-label": "Fechar reel",
+                        style: {
+                            position: "absolute",
+                            top: "18px",
+                            right: "18px",
+                            zIndex: 10001,
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "50%",
+                            border: "1px solid rgba(255,255,255,0.25)",
+                            background: "rgba(0,0,0,0.65)",
+                            color: "#fff",
+                            fontSize: "20px",
+                            cursor: "pointer",
+                        },
+                        children: "×",
+                    }),
                     e.jsx("img", {
                         src: me.imageSrc,
                         alt: "",

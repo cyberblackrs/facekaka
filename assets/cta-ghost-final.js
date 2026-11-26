@@ -464,6 +464,21 @@ const X = 600 * 1e3,
               }),
             }),
             e.jsx("div", {
+              style: {
+                margin: "10px auto 4px",
+                maxWidth: "360px",
+                padding: "9px 14px",
+                borderRadius: "12px",
+                background: "rgba(14,130,248,0.1)",
+                border: "1px solid rgba(14,130,248,0.28)",
+                color: "#dbeafe",
+                fontSize: "12px",
+                fontWeight: 600,
+                textAlign: "center",
+              },
+              children: `Relatório @${o || "perfil"}: 18 conversas • 14 áudios • 9 mídias protegidas`,
+            }),
+            e.jsx("div", {
               className: "cta-scroll-indicator",
               children: e.jsx("svg", {
                 fill: "none",

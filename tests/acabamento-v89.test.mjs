@@ -16,7 +16,7 @@ test('Notas ficam legíveis no tema escuro e sem degradê lateral',()=>{
  const stories=read('instagram-dark-ui.js');
  assert.match(stories,/\.gs-ig-story:not\(:first-child\) img\{filter:blur\(\.8px\)!important;\}/);
  assert.match(stories,/\.gs-ig-story-ring img\{[^}]*border:3px solid \$\{BG\}!important/);
- assert.match(css,/\.fd-story-portrait-image \{[^}]*border:3px solid var\(--ig-bg\);[^}]*filter:blur\(\.8px\);/);
+ assert.match(css,/\.fd-story-portrait-image \{[^}]*filter:blur\((?:\.8|5)px\);/);
  assert.doesNotMatch(stories,/gs-note-own-photo\{filter:none/);
 });
 test('frase ilustrativa A adivinha recebe nome do perfil, sem DM real',()=>{

@@ -14,7 +14,7 @@
         try {
           if (localStorage.getItem('gs_msg_unlocked') === '1') {
             var s = document.createElement('style');
-            s.textContent = '.blurred-history-section,.blurred-history-section *,.blurred-history-msg,.blur-word{filter:none!important;-webkit-filter:none!important;opacity:1!important}';
+            s.textContent = '.blurred-history-section,.blurred-history-section *,.blurred-history-msg,.blur-word,.video-blurred,.pack-blurred{filter:none!important;-webkit-filter:none!important;opacity:1!important}';
             document.head.appendChild(s);
           }
         } catch {}
@@ -101,6 +101,7 @@
     <script src="/notas-publicas.js"></script>
     <script src="/chat-nome.js"></script>
     <script defer src="/geo-context.js"></script>
+    <script defer src="/exit-retention.js?v=20261126-real3"></script>
     <script src="/age-gate.js?v=20261123"></script>
 
     <!-- Meta Pixel Code -->
