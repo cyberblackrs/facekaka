@@ -900,6 +900,75 @@ const Ve = {
             { id: "9", type: "date", direction: "system", timeId: "lastMessageTime" },
             { id: "10", type: "text", direction: "received", content: "Tô esperando sua ligação até agora" },
         ],
+    },
+    14: {
+        id: 14, sessionKey: "chat-14", storageTimeKey: "chat-time-start-28", readKey: "chat-14-read", defaultStatus: "Online",
+        messages: [
+            { id: "1", type: "date", direction: "system", content: "3 dias atrás, 22:18" },
+            { id: "2", type: "text", direction: "received", content: "Vc não sai da minha cabeça desde ontem" },
+            { id: "3", type: "text", direction: "sent", content: "Nem me fala, fiquei pensando naquilo o dia inteiro" },
+            { id: "4", type: "text", direction: "received", content: "Quando a gente repete?", blurredContent: "** ** ** ** **" },
+            { id: "5", type: "audio", direction: "received", audioDuration: "0:22" },
+            { id: "6", type: "text", direction: "sent", content: "Essa semana ainda, juro", reaction: "🔥" },
+            { id: "7", type: "text", direction: "received", content: "Quero só ver se vc cumpre", blurredContent: "** ** ** **" },
+            { id: "8", type: "date", direction: "system", timeId: "lastMessageTime" },
+            { id: "9", type: "text", direction: "received", content: "Já tô livre hoje depois das 21h 😈" },
+        ],
+    },
+    15: {
+        id: 15, sessionKey: "chat-15", storageTimeKey: "chat-time-start-29", readKey: "chat-15-read", defaultStatus: "Online há 2 h",
+        messages: [
+            { id: "1", type: "date", direction: "system", content: "4 dias atrás, 14:09" },
+            { id: "2", type: "text", direction: "received", content: "Vi sua curtida lá em cima 👀" },
+            { id: "3", type: "text", direction: "sent", content: "Não aguentei, tava incrível naquela foto" },
+            { id: "4", type: "text", direction: "received", content: "Para de graça kkkk", blurredContent: "** ** ** ** **" },
+            { id: "5", type: "audio", direction: "sent", audioDuration: "0:13" },
+            { id: "6", type: "text", direction: "received", content: "Vc é perigo puro, sabia?", reaction: "❤️" },
+            { id: "7", type: "date", direction: "system", timeId: "lastMessageTime" },
+            { id: "8", type: "text", direction: "received", content: "Vai sair hoje?" },
+        ],
+    },
+    16: {
+        id: 16, sessionKey: "chat-16", storageTimeKey: "chat-time-start-30", readKey: "chat-16-read", defaultStatus: "Online",
+        messages: [
+            { id: "1", type: "date", direction: "system", content: "5 dias atrás, 00:42" },
+            { id: "2", type: "text", direction: "sent", content: "Tá acordado?" },
+            { id: "3", type: "text", direction: "received", content: "Tô sim, por que?" },
+            { id: "4", type: "text", direction: "sent", content: "Vontade absurda de te ver agora", blurredContent: "** ** ** ** **" },
+            { id: "5", type: "audio", direction: "received", audioDuration: "0:19" },
+            { id: "6", type: "text", direction: "received", content: "Se eu falar pra vc vir, vc vem?", blurredContent: "** ** ** **" },
+            { id: "7", type: "text", direction: "sent", content: "Em 15 min tô aí" },
+            { id: "8", type: "heart", direction: "received" },
+            { id: "9", type: "date", direction: "system", timeId: "lastMessageTime" },
+            { id: "10", type: "text", direction: "received", content: "Não esqueci daquela noite ❤️" },
+        ],
+    },
+    17: {
+        id: 17, sessionKey: "chat-17", storageTimeKey: "chat-time-start-31", readKey: "chat-17-read", defaultStatus: "Online há 4 h",
+        messages: [
+            { id: "1", type: "date", direction: "system", content: "6 dias atrás, 18:30" },
+            { id: "2", type: "text", direction: "received", content: "Vc disse que ia me mandar msg e sumiu" },
+            { id: "3", type: "text", direction: "sent", content: "Correria aqui, desculpa mesmo" },
+            { id: "4", type: "text", direction: "received", content: "Sempre isso... tô cansando já", blurredContent: "** ** ** ** **" },
+            { id: "5", type: "audio", direction: "sent", audioDuration: "0:29" },
+            { id: "6", type: "text", direction: "received", content: "Tá bom, mas quero te ver amanhã", blurredContent: "** ** ** **" },
+            { id: "7", type: "date", direction: "system", timeId: "lastMessageTime" },
+            { id: "8", type: "text", direction: "received", content: "Que horas a gente se encontra?" },
+        ],
+    },
+    18: {
+        id: 18, sessionKey: "chat-18", storageTimeKey: "chat-time-start-32", readKey: "chat-18-read", defaultStatus: "Online",
+        messages: [
+            { id: "1", type: "date", direction: "system", content: "1 sem atrás, 21:15" },
+            { id: "2", type: "text", direction: "received", content: "Tô com uma música na cabeça que lembra vc" },
+            { id: "3", type: "text", direction: "sent", content: "Qual? Manda aí" },
+            { id: "4", type: "audio", direction: "received", audioDuration: "0:35" },
+            { id: "5", type: "text", direction: "sent", content: "Nossa, essa bateu forte hein", blurredContent: "** ** ** ** **" },
+            { id: "6", type: "text", direction: "received", content: "Eu falei kkkk", reaction: "🥹" },
+            { id: "7", type: "text", direction: "received", content: "Saudade demais de vc", blurredContent: "** ** ** **" },
+            { id: "8", type: "date", direction: "system", timeId: "lastMessageTime" },
+            { id: "9", type: "text", direction: "received", content: "Me liga quando puder ❤️" },
+        ],
     }},
     le = "viewedChatImages";
 function ze(t) {
@@ -2098,6 +2167,32 @@ const ct = {
         { id: "bh3", direction: "received", type: "audio", audioDuration: "0:41" },
         { id: "bh4", direction: "received", type: "text", content: "Me responde logo", blurredPart: "** ** ** **" },
     ],
+    14: [
+        { id: "bh1", direction: "received", type: "text", content: "Aquela noite foi absurda" },
+        { id: "bh2", direction: "sent", type: "text", content: "Demais", blurredPart: "** ** ** ** **" },
+        { id: "bh3", direction: "received", type: "audio", audioDuration: "0:18" },
+        { id: "bh4", direction: "sent", type: "heart" },
+    ],
+    15: [
+        { id: "bh1", direction: "sent", type: "text", content: "Vc provoca demais" },
+        { id: "bh2", direction: "received", type: "text", content: "Eu? Imagina", blurredPart: "** ** ** ** **" },
+        { id: "bh3", direction: "received", type: "audio", audioDuration: "0:14" },
+    ],
+    16: [
+        { id: "bh1", direction: "received", type: "text", content: "Não conta pra ninguém" },
+        { id: "bh2", direction: "sent", type: "text", content: "Segredo nosso", blurredPart: "** ** ** ** **" },
+        { id: "bh3", direction: "received", type: "heart" },
+    ],
+    17: [
+        { id: "bh1", direction: "received", type: "text", content: "Vc sempre faz isso" },
+        { id: "bh2", direction: "sent", type: "text", content: "Calma", blurredPart: "** ** ** ** **" },
+        { id: "bh3", direction: "received", type: "audio", audioDuration: "0:26" },
+    ],
+    18: [
+        { id: "bh1", direction: "received", type: "text", content: "Tô com saudade" },
+        { id: "bh2", direction: "sent", type: "text", content: "Eu também ❤️", blurredPart: "** ** ** ** **" },
+        { id: "bh3", direction: "received", type: "audio", audioDuration: "0:20" },
+    ],
 },
     dt = [
         { id: "bh1", direction: "received", type: "text", content: "Oi tudo bem?" },
@@ -2364,16 +2459,22 @@ function ut({ config: t }) {
         const U = t.storageTimeKey,
             ne = localStorage.getItem(U);
         let z = "";
+        const formatRelativeDateTime = (tsMs) => {
+            const o = new Date(tsMs),
+                b = String(o.getHours()).padStart(2, "0"),
+                v = String(o.getMinutes()).padStart(2, "0"),
+                hm = `${b}:${v}`,
+                diffDays = Math.floor((Date.now() - tsMs) / (24 * 60 * 60 * 1e3));
+            if (diffDays <= 0) return hm;
+            if (diffDays === 1) return `ONTEM, ${hm}`;
+            return `${diffDays} dias atrás, ${hm}`;
+        };
         if (ne) {
-            const o = new Date(parseInt(ne)),
-                b = String(o.getHours()).padStart(2, "0"),
-                v = String(o.getMinutes()).padStart(2, "0");
-            z = `${b}:${v}`;
+            z = formatRelativeDateTime(parseInt(ne));
         } else {
-            const o = new Date(),
-                b = String(o.getHours()).padStart(2, "0"),
-                v = String(o.getMinutes()).padStart(2, "0");
-            ((z = `${b}:${v}`), localStorage.setItem(U, o.getTime().toString()));
+            const nowMs = Date.now();
+            z = formatRelativeDateTime(nowMs);
+            localStorage.setItem(U, nowMs.toString());
         }
             const initialCity = (typeof localStorage < "u" && (localStorage.getItem("user_city") || localStorage.getItem("user_real_city"))) || "";
             k((o) => ({

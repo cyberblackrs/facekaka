@@ -679,7 +679,7 @@ function se({ chat: t, onChatClick: i, initialTime: s }) {
     o = n.useRef(null);
   n.useEffect(() => {
     if (t.isLocked) return;
-    const l = `chat-time-start-${t.id}`;
+    const l = `chat-time-start-${String(t.id || "").replace("chat_", "")}`;
     let a = localStorage.getItem(l);
     if (!a) {
       const C = ee(s || t.time),
@@ -1215,7 +1215,7 @@ function le(t, i) {
         id: "chat_20",
         displayName: I(t[2]?.username || "ju.silva"),
         profilePic:
-          t[2]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+          t[2]?.profile_pic_url || "/assets-local/notes/pessoa-01.jpg",
         lastMessage: "Aparece lá",
         time: " • 1 d",
         isUnread: !0,
@@ -1226,7 +1226,7 @@ function le(t, i) {
         id: "chat_21",
         displayName: I(t[3]?.username || "camila_r"),
         profilePic:
-          t[3]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+          t[3]?.profile_pic_url || "/assets-local/notes/pessoa-02.jpg",
         lastMessage: "Responde pelo amor de Deus",
         time: " • 1 d",
         isUnread: !0,
@@ -1237,7 +1237,7 @@ function le(t, i) {
         id: "chat_22",
         displayName: I(t[4]?.username || "larissa_m"),
         profilePic:
-          t[4]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+          t[4]?.profile_pic_url || "/assets-local/notes/pessoa-03.jpg",
         lastMessage: "Bom dia meu amor ❤️",
         time: " • 2 d",
         isUnread: !1,
@@ -1248,7 +1248,7 @@ function le(t, i) {
         id: "chat_23",
         displayName: I(t[5]?.username || "rafa_silva"),
         profilePic:
-          t[5]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+          t[5]?.profile_pic_url || "/assets-local/notes/pessoa-04.jpg",
         lastMessage: "Tô te esperando no mesmo lugar",
         time: " • 2 d",
         isUnread: !0,
@@ -1259,7 +1259,7 @@ function le(t, i) {
         id: "chat_24",
         displayName: I(t[6]?.username || "duda.costa"),
         profilePic:
-          t[6]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+          t[6]?.profile_pic_url || "/assets-local/notes/pessoa-05.jpg",
         lastMessage: "Ainda tô com raiva de vc",
         time: " • 3 d",
         isUnread: !0,
@@ -1270,7 +1270,7 @@ function le(t, i) {
         id: "chat_25",
         displayName: I(t[7]?.username || "thiago_alves"),
         profilePic:
-          t[7]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+          t[7]?.profile_pic_url || "/assets-local/notes/pessoa-06.jpg",
         lastMessage: "Não esqueci do que vc falou ontem 😈",
         time: " • 3 d",
         isUnread: !1,
@@ -1281,7 +1281,7 @@ function le(t, i) {
         id: "chat_26",
         displayName: I(t[8]?.username || "bia.oliveira"),
         profilePic:
-          t[8]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+          t[8]?.profile_pic_url || "/assets-local/notes/pessoa-07.jpg",
         lastMessage: "Que horas a gente sai sexta?",
         time: " • 4 d",
         isUnread: !1,
@@ -1292,12 +1292,67 @@ function le(t, i) {
         id: "chat_27",
         displayName: I(t[9]?.username || "gabi_souza"),
         profilePic:
-          t[9]?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+          t[9]?.profile_pic_url || "/assets-local/notes/pessoa-08.jpg",
         lastMessage: "Tô esperando sua ligação até agora",
         time: " • 5 d",
         isUnread: !0,
         isClickable: !0,
         chatIndex: 13,
+      },
+      {
+        id: "chat_28",
+        displayName: I(t[10]?.username || "lucas.melo"),
+        profilePic:
+          t[10]?.profile_pic_url || "/assets-local/notes/pessoa-01.jpg",
+        lastMessage: "Já tô livre hoje depois das 21h 😈",
+        time: " • 3 d",
+        isUnread: !0,
+        isClickable: !0,
+        chatIndex: 14,
+      },
+      {
+        id: "chat_29",
+        displayName: I(t[11]?.username || "mari_ferraz"),
+        profilePic:
+          t[11]?.profile_pic_url || "/assets-local/notes/pessoa-02.jpg",
+        lastMessage: "Vai sair hoje?",
+        time: " • 4 d",
+        isUnread: !1,
+        isClickable: !0,
+        chatIndex: 15,
+      },
+      {
+        id: "chat_30",
+        displayName: I(t[12]?.username || "pedro.henr"),
+        profilePic:
+          t[12]?.profile_pic_url || "/assets-local/notes/pessoa-03.jpg",
+        lastMessage: "Não esqueci daquela noite ❤️",
+        time: " • 5 d",
+        isUnread: !1,
+        isClickable: !0,
+        chatIndex: 16,
+      },
+      {
+        id: "chat_31",
+        displayName: I(t[13]?.username || "nat.lima"),
+        profilePic:
+          t[13]?.profile_pic_url || "/assets-local/notes/pessoa-04.jpg",
+        lastMessage: "Que horas a gente se encontra?",
+        time: " • 6 d",
+        isUnread: !0,
+        isClickable: !0,
+        chatIndex: 17,
+      },
+      {
+        id: "chat_32",
+        displayName: I(t[14]?.username || "vini_castro"),
+        profilePic:
+          t[14]?.profile_pic_url || "/assets-local/notes/pessoa-05.jpg",
+        lastMessage: "Me liga quando puder ❤️",
+        time: " • 1 sem",
+        isUnread: !1,
+        isClickable: !0,
+        chatIndex: 18,
       },
     ],
     c = O();
@@ -1339,7 +1394,7 @@ function le(t, i) {
       "1 sem",
       "2 sem",
     ],
-    m = t.slice(10),
+    m = t.slice(15),
     f = 7,
     h = u.length;
   for (let l = 0; l < h; l++) {
