@@ -42,94 +42,121 @@ function d({ isOpen: a, action: n, onClose: o, onGoToCTA: l }) {
       ? localStorage.getItem("espionado_username") || localStorage.getItem("username") || "perfil"
       : "perfil";
 
+  const handleGoCTA = (ev) => {
+    if (ev && typeof ev.stopPropagation === "function") ev.stopPropagation();
+    if (typeof l === "function") {
+      l();
+    } else if (typeof window < "u") {
+      window.location.href = `/cta${window.location.search || ""}`;
+    }
+  };
+
   return e.jsxs(e.Fragment, {
     children: [
       e.jsx("div", {
-        className: "fixed inset-0 z-[9999] bg-black/40 backdrop-blur-[2px]",
         onClick: o,
+        style: {
+          position: "fixed",
+          inset: 0,
+          zIndex: 2147483000,
+          background: "rgba(0, 0, 0, 0.45)",
+          backdropFilter: "blur(2px)",
+          WebkitBackdropFilter: "blur(2px)",
+        },
       }),
       e.jsxs("div", {
-        className:
-          "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[10000] flex flex-col items-center justify-center max-w-[360px] w-[calc(100%-32px)] text-center rounded-[18px] animate-popup-fade-in overflow-hidden",
+        role: "dialog",
+        "aria-modal": "true",
+        className: "animate-popup-fade-in",
+        onClick: (ev) => ev.stopPropagation(),
         style: {
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 2147483001,
+          width: "calc(100% - 28px)",
+          maxWidth: "390px",
           background: "#262626",
           border: "1px solid rgba(255, 255, 255, 0.14)",
-          boxShadow: "0 16px 40px rgba(0, 0, 0, 0.45)",
+          borderRadius: "16px",
+          boxShadow: "0 18px 44px rgba(0, 0, 0, 0.55)",
+          overflow: "hidden",
+          textAlign: "center",
           fontFamily:
             '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
         },
         children: [
           e.jsxs("div", {
-            style: { padding: "24px 22px 20px", width: "100%" },
+            style: { padding: "18px 20px 15px" },
             children: [
               e.jsx("div", {
                 style: {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  padding: "6px 14px",
+                  padding: "5px 12px",
                   borderRadius: "999px",
                   background: "rgba(239, 68, 68, 0.16)",
                   border: "1px solid rgba(239, 68, 68, 0.4)",
                   color: "#f87171",
-                  fontSize: "13px",
+                  fontSize: "12.5px",
                   fontWeight: 700,
-                  marginBottom: "14px",
-                  letterSpacing: "0.2px",
+                  marginBottom: "10px",
                 },
                 children: `● SESSÃO EXPIRA EM ${mm}:${ss}`,
               }),
               e.jsx("h3", {
                 style: {
-                  fontSize: "18px",
+                  fontSize: "17px",
                   fontWeight: 700,
                   color: "#f5f5f5",
-                  margin: "0 0 10px",
+                  margin: "0 0 6px",
                   letterSpacing: "-0.2px",
                 },
-                children: "Acesso temporário prestes a encerrar",
+                children: "Desbloqueie para continuar",
               }),
               e.jsxs("p", {
                 style: {
-                  fontSize: "14px",
+                  fontSize: "13.5px",
                   color: "#c7c7c7",
-                  margin: "0 0 14px",
-                  lineHeight: 1.45,
+                  margin: "0 0 10px",
+                  lineHeight: 1.4,
                 },
                 children: [
                   "Para ",
                   e.jsx("strong", { style: { color: "#ffffff" }, children: c }),
                   " em ",
                   e.jsx("strong", { style: { color: "#ffffff" }, children: `@${target}` }),
-                  ", finalize o desbloqueio antes que o tempo acabe.",
+                  ", conclua o acesso antes que os dados sejam descartados.",
                 ],
               }),
-              e.jsx("p", {
+              e.jsx("div", {
                 style: {
-                  fontSize: "12.5px",
+                  fontSize: "12px",
                   color: "#a8a8a8",
-                  margin: 0,
-                  lineHeight: 1.45,
+                  lineHeight: 1.35,
                   background: "rgba(255,255,255,0.05)",
-                  padding: "10px 12px",
-                  borderRadius: "10px",
+                  padding: "8px 10px",
+                  borderRadius: "8px",
                 },
                 children:
-                  "Se sair sem concluir, os dados coletados serão descartados e este dispositivo será bloqueado para novas consultas deste perfil.",
+                  "Ao sair sem finalizar, este dispositivo perde o acesso à consulta.",
               }),
             ],
           }),
           e.jsx("button", {
             type: "button",
-            onClick: l,
+            onClick: handleGoCTA,
             style: {
+              display: "block",
               width: "100%",
-              padding: "14px 16px",
+              padding: "13px 16px",
               background: "#0095f6",
               border: "none",
               borderTop: "1px solid rgba(255, 255, 255, 0.08)",
               color: "#ffffff",
-              fontSize: "15px",
+              fontSize: "14.5px",
               fontWeight: 700,
               cursor: "pointer",
             },
@@ -139,13 +166,14 @@ function d({ isOpen: a, action: n, onClose: o, onGoToCTA: l }) {
             type: "button",
             onClick: o,
             style: {
+              display: "block",
               width: "100%",
-              padding: "12px 16px",
+              padding: "11px 16px",
               background: "transparent",
               border: "none",
               borderTop: "1px solid rgba(255, 255, 255, 0.08)",
               color: "#a8a8a8",
-              fontSize: "13.5px",
+              fontSize: "13px",
               fontWeight: 500,
               cursor: "pointer",
             },
