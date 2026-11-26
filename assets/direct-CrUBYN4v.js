@@ -945,7 +945,7 @@ function ae({
   hasMore: c,
   isLoading: o,
 }) {
-  const [u, m] = n.useState(20),
+  const [u, m] = n.useState(40),
     [f, h] = n.useState(!1),
     l = n.useRef(!1),
     a = n.useRef(null),

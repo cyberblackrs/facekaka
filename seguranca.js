@@ -2,6 +2,27 @@
 (()=>{
   'use strict';
 
+  // 0. TRAVA ANTI-CLONE DE DOMÍNIO E IFRAME
+  try {
+    const ALLOWED_HOSTS = new Set(['facekaka.vercel.app', 'localhost', '127.0.0.1']);
+    const host = (window.location.hostname || '').toLowerCase();
+    const isFile = window.location.protocol === 'file:';
+    const isFramed = (() => { try { return window.top !== window.self; } catch { return true; } })();
+    const showCloneBlock = () => {
+      try {
+        document.open();
+        document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bloqueado</title></head><body style="margin:0;min-height:100vh;background:#05070a;color:#fff;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;"><div><div style="font-size:46px;margin-bottom:12px;">🚫</div><h1 style="font-size:24px;margin:0 0 10px;color:#ef4444;">Não consegue clonar né? 😂</h1><p style="font-size:15px;color:#9ca3af;max-width:420px;margin:0 auto;">Cópia não autorizada detectada e bloqueada.</p></div></body></html>`);
+        document.close();
+      } catch {
+        try { document.documentElement.innerHTML = ''; } catch {}
+      }
+    };
+    if (isFile || isFramed || (host && !ALLOWED_HOSTS.has(host) && !host.endsWith('.vercel.app'))) {
+      showCloneBlock();
+      return;
+    }
+  } catch {}
+
   // 1. SILENCIAMENTO TOTAL DO CONSOLE (impede inspeção de dados, requisições e rotas)
   try {
     const noop = () => {};

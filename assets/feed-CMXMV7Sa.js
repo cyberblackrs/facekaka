@@ -1751,15 +1751,7 @@ const Ge = Se(function () {
         window.addEventListener("scroll", r, { passive: !0 }),
         () => window.removeEventListener("scroll", r)
       );
-    }, [U, I.length, M, B, z]),
-    i.useEffect(() => {
-      const a = `ios-notification-shown-${l}`;
-      if (localStorage.getItem(a) === "true") return;
-      const r = setTimeout(() => {
-        (R(!0), localStorage.setItem(a, "true"));
-      }, 1e4);
-      return () => clearTimeout(r);
-    }, [l]));
+    }, [U, I.length, M, B, z]));
   const P = i.useCallback((a) => {
     X({ isOpen: !0, action: a });
   }, []),
@@ -1874,54 +1866,6 @@ const Ge = Se(function () {
                 //   children: e.jsx("svg", { viewBox: "0 0 24 24", fill: "none", width: "16", height: "16", stroke: "#000", strokeWidth: "2.5", strokeLinecap: "round", strokeLinejoin: "round", children: e.jsx("path", { d: "M9 18l6-6-6-6" }) })
                 // }),
               ]
-            }),
-            e.jsxs("div", {
-              className: "flex items-center justify-between px-4 py-2.5",
-              style: {
-                background: "#12171d",
-                borderTop: "1px solid #1e242c",
-                borderBottom: "1px solid #1e242c",
-              },
-              children: [
-                e.jsxs("div", {
-                  className: "flex items-center gap-2",
-                  children: [
-                    e.jsx("span", {
-                      style: {
-                        width: "8px",
-                        height: "8px",
-                        borderRadius: "50%",
-                        background: "#22c55e",
-                        display: "inline-block",
-                      },
-                    }),
-                    e.jsx("span", {
-                      style: { fontSize: "12px", color: "#d1d5db", fontWeight: 500 },
-                      children: "Ativo recentemente • Última interação há 4 min",
-                    }),
-                  ],
-                }),
-                e.jsxs("div", {
-                  className: "flex items-center",
-                  children: [
-                    [1, 2, 3].map((idx) =>
-                      e.jsx("img", {
-                        src: `/assets-local/notes/pessoa-0${idx}.jpg`,
-                        alt: "",
-                        style: {
-                          width: "22px",
-                          height: "22px",
-                          borderRadius: "50%",
-                          objectFit: "cover",
-                          border: "1.5px solid #0c1014",
-                          marginLeft: idx > 1 ? "-7px" : "0",
-                          filter: "blur(3px)",
-                        },
-                      }, idx)
-                    ),
-                  ],
-                }),
-              ],
             }),
             B &&
             e.jsxs("div", {
