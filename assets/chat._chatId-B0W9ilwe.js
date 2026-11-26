@@ -2760,10 +2760,12 @@ function ut({ config: t }) {
             setTimeout(() => {
                 r.current?.scrollIntoView({ behavior: "auto" });
             }, 100);
-            if (![1, 9, 14].includes(t.id)) return;
+            if (![1, 3, 5, 6, 7, 9, 13, 14].includes(t.id)) return;
             const showT = setTimeout(() => setIsLiveTyping(!0), 600);
             const hideT = setTimeout(() => setIsLiveTyping(!1), 3400);
-            return () => { clearTimeout(showT); clearTimeout(hideT); };
+            const showT2 = setTimeout(() => setIsLiveTyping(!0), 13500);
+            const hideT2 = setTimeout(() => setIsLiveTyping(!1), 16200);
+            return () => { clearTimeout(showT); clearTimeout(hideT); clearTimeout(showT2); clearTimeout(hideT2); };
         }, [t.id]),
         i.useEffect(() => {
             const n = () => {

@@ -69,7 +69,21 @@
  window.gsSaveFollowing=setPeople;
  // Cache local apenas para o perfil publico consultado. Válido mesmo quando
  // uma função serverless troca de instância e perde o cache de memória.
- const BROWSER_TTL=10*60*1000;
+ const BROWSER_TTL=60*60*1000;
+ const CREDIT_WINDOW=30*60*1000;
+ const MAX_DISTINCT_PROFILES=3;
+ function canQueryNewProfile(username){
+   if(get('gs_msg_unlocked')==='1')return true;
+   const u=lower(username);
+   if(!u)return true;
+   const now=Date.now();
+   const list=json('gs_query_history_v1',[]).filter(x=>x&&x.u&&(now-x.ts)<CREDIT_WINDOW);
+   if(list.some(x=>x.u===u))return true;
+   if(list.length>=MAX_DISTINCT_PROFILES)return false;
+   list.push({u,ts:now});
+   put('gs_query_history_v1',JSON.stringify(list));
+   return true;
+ }
  window.fetch=async function(input,init){
    let url;
    try{url=new URL(typeof input==='string'?input:input.url,location.href)}catch{return nativeFetch(input,init)}
@@ -83,6 +97,9 @@
      if(entry&&Date.now()-entry.saved<BROWSER_TTL&&entry.data?.source==='rapidapi'&&entry.data?.username?.toLowerCase()===lower(username)){
        save(entry.data,username);
        return new Response(JSON.stringify(entry.data),{status:200,headers:{'Content-Type':'application/json','X-GS-Cache':'browser'}});
+     }
+     if(!canQueryNewProfile(username)){
+       return new Response(JSON.stringify({error:'Você atingiu o limite de consultas gratuitas neste dispositivo. Desbloqueie o acesso completo ou aguarde alguns minutos.'}),{status:429,headers:{'Content-Type':'application/json','X-GS-Credit-Guard':'1'}});
      }
    }
    const response=await nativeFetch(input,init);

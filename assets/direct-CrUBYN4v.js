@@ -1073,6 +1073,33 @@ function ne(t) {
       console.warn("Error saving read chat to localStorage");
     }
 }
+function gsHash(str) {
+  const s = String(str || "instagram").toLowerCase();
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+function gsRng(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function gsTargetStats(username) {
+  const u = gsHash(username || "perfil");
+  return {
+    msgCount: 142 + (u % 187),
+    audioCount: 7 + ((u >>> 4) % 14),
+    mediaCount: 5 + ((u >>> 8) % 11),
+  };
+}
 function oe(t, i) {
   const s = [],
     r = [
@@ -1377,15 +1404,35 @@ function le(t, i) {
         chatIndex: 18,
       },
     ],
-    c = O();
-  s.push(
-    ...r.map((l) => ({
-      ...l,
+    c = O(),
+    seed = gsHash(i?.username || "instagram"),
+    rng = gsRng(seed),
+    headChat = r[0],
+    tailChats = r.slice(1);
+  for (let k = tailChats.length - 1; k > 0; k--) {
+    const j = Math.floor(rng() * (k + 1));
+    [tailChats[k], tailChats[j]] = [tailChats[j], tailChats[k]];
+  }
+  const seededChats = [headChat, ...tailChats].map((ch, idx) => {
+    const shiftMin = 12 + Math.floor(rng() * 38);
+    const shiftHr = 1 + Math.floor(rng() * 5);
+    const shiftDay = 1 + Math.floor(rng() * 5);
+    let nextTime = ch.time;
+    if (idx > 0 && typeof ch.time === "string") {
+      if (ch.time.includes("min")) nextTime = ` • ${shiftMin} min`;
+      else if (ch.time.includes("h")) nextTime = ` • ${shiftHr} h`;
+      else if (ch.time.includes("d")) nextTime = ` • ${shiftDay} d`;
+    }
+    const nextUnread = idx <= 1 ? ch.isUnread : rng() > 0.48;
+    return {
+      ...ch,
+      time: nextTime,
+      isUnread: nextUnread && !c.has(ch.id),
       isLocked: !1,
-      username: l.id,
-      isUnread: l.isUnread && !c.has(l.id),
-    })),
-  );
+      username: ch.id,
+    };
+  });
+  s.push(...seededChats);
   const o = [
     "Enviou um reel de dr.diegooficial",
     "Enviado sexta-feira",
@@ -1597,7 +1644,14 @@ const xe = H(function () {
     }, [i]),
     [dmQuery, setDmQuery] = n.useState(""),
     [dmFilter, setDmFilter] = n.useState("all"),
+    [syncStep, setSyncStep] = n.useState(() => {
+      try {
+        const tgt = r || localStorage.getItem("username") || localStorage.getItem("espionado_username") || "perfil";
+        return sessionStorage.getItem(`gs_dm_loaded_${tgt.toLowerCase()}`) === "1" ? 3 : 0;
+      } catch { return 3; }
+    }),
     dmUnlocked = typeof localStorage < "u" && localStorage.getItem("gs_msg_unlocked") === "1",
+    targetStats = gsTargetStats(c || u?.username || "perfil"),
     visibleChats = dmUnlocked
       ? l.filter((ch) => {
           if (dmFilter === "unread" && !ch.isUnread) return !1;
@@ -1609,6 +1663,19 @@ const xe = H(function () {
           return !0;
         })
       : l;
+  n.useEffect(() => {
+    if (!N || syncStep >= 3) return;
+    const t1 = setTimeout(() => setSyncStep(1), 700);
+    const t2 = setTimeout(() => setSyncStep(2), 1450);
+    const t3 = setTimeout(() => {
+      setSyncStep(3);
+      try {
+        const tgt = (c || u?.username || "perfil").toLowerCase();
+        sessionStorage.setItem(`gs_dm_loaded_${tgt}`, "1");
+      } catch {}
+    }, 2200);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, [N, syncStep, c, u]);
   return N
     ? e.jsxs("div", {
       className: "dm-screen",
@@ -1617,6 +1684,73 @@ const xe = H(function () {
           '"Arbitare Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       },
       children: [
+        syncStep < 3 &&
+        e.jsx("div", {
+          style: {
+            position: "fixed",
+            inset: 0,
+            zIndex: 99999,
+            background: "rgba(12,16,20,0.97)",
+            backdropFilter: "blur(10px)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "24px",
+            textAlign: "center",
+          },
+          children: e.jsxs("div", {
+            style: { maxWidth: "320px", width: "100%" },
+            children: [
+              e.jsx("div", {
+                style: {
+                  width: "52px",
+                  height: "52px",
+                  margin: "0 auto 16px",
+                  borderRadius: "50%",
+                  border: "3px solid rgba(55,151,240,0.2)",
+                  borderTopColor: "#3797f0",
+                  animation: "spin 0.8s linear infinite",
+                },
+              }),
+              e.jsx("p", {
+                style: { color: "#f5f5f5", fontSize: "15px", fontWeight: 600, marginBottom: "6px" },
+                children:
+                  syncStep === 0
+                    ? "Conectando aos servidores seguros..."
+                    : syncStep === 1
+                      ? `Coletando conversas de @${c || "perfil"}...`
+                      : "Descriptografando mídias e áudios...",
+              }),
+              e.jsx("p", {
+                style: { color: "#8e9399", fontSize: "12px", marginBottom: "14px" },
+                children:
+                  syncStep === 0
+                    ? "Estabelecendo túnel criptografado (30%)"
+                    : syncStep === 1
+                      ? `${targetStats.msgCount} mensagens localizadas (74%)`
+                      : "Sincronização concluída ✓ (100%)",
+              }),
+              e.jsx("div", {
+                style: {
+                  width: "100%",
+                  height: "4px",
+                  borderRadius: "999px",
+                  background: "#1f242a",
+                  overflow: "hidden",
+                },
+                children: e.jsx("div", {
+                  style: {
+                    height: "100%",
+                    width: syncStep === 0 ? "32%" : syncStep === 1 ? "74%" : "100%",
+                    background: "linear-gradient(90deg, #3797f0, #60a5fa)",
+                    transition: "width 0.55s ease",
+                  },
+                }),
+              }),
+            ],
+          }),
+        }),
         e.jsxs("div", {
           className: "dm-panel",
           children: [
@@ -1626,6 +1760,45 @@ const xe = H(function () {
               onNewMessageClick: () => b("Nova mensagem"),
             }),
             e.jsx(G, { onBlockedSearch: () => b("Meta AI"), searchQuery: dmQuery, onSearchChange: setDmQuery }),
+            e.jsxs("div", {
+              style: {
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                margin: "10px 16px 2px",
+                padding: "8px 12px",
+                borderRadius: "12px",
+                background: "#14181e",
+                border: "1px solid #22272e",
+              },
+              children: [
+                e.jsx("img", {
+                  src: u?.profile_pic_url || "/images/avatars/perfil-sem-foto.jpeg",
+                  alt: "",
+                  style: {
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    filter: "blur(5px)",
+                    flexShrink: 0,
+                  },
+                }),
+                e.jsxs("div", {
+                  style: { minWidth: 0, flex: 1 },
+                  children: [
+                    e.jsx("div", {
+                      style: { color: "#f5f5f5", fontSize: "13px", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+                      children: `@${c || u?.username || "perfil"}`,
+                    }),
+                    e.jsx("div", {
+                      style: { color: "#8e9399", fontSize: "11px" },
+                      children: `${targetStats.msgCount} mensagens • ${targetStats.audioCount} áudios • ${targetStats.mediaCount} mídias`,
+                    }),
+                  ],
+                }),
+              ],
+            }),
             dmUnlocked &&
             e.jsx("div", {
               className: "flex items-center gap-2 px-4 pt-3",

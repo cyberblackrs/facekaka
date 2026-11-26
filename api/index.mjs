@@ -3,13 +3,27 @@ import {getVisitorLocation} from '../lib/location.mjs';
 import {fetchAvatar,allowedAvatarURL} from '../lib/avatar.mjs';
 import {readRawBody,verifySafiPaySignature,processSafiPayWebhookPayload,getActivePaymentStore} from '../lib/safipay.mjs';
 
-const hits=new Map(),cache=new Map(),inflight=new Map(),followingDiagnostics=new Map(),recentFailures=new Map(),lastPartialComplete=new Map();
+const hits=new Map(),distinctProfiles=new Map(),cache=new Map(),inflight=new Map(),followingDiagnostics=new Map(),recentFailures=new Map(),lastPartialComplete=new Map();
 function clientIP(req){return String(req.headers?.['x-forwarded-for']||req.socket?.remoteAddress||'anonymous').split(',')[0].trim()}
+function isLocalIP(ip){return !ip||ip==='anonymous'||ip==='127.0.0.1'||ip==='::1'||ip.startsWith('::ffff:127.')}
 function checkRate(req){
   const key=clientIP(req),now=Date.now(),entry=hits.get(key)||{since:now,n:0};
   if(now-entry.since>=60_000){entry.since=now;entry.n=0;}
   entry.n++;hits.set(key,entry);if(hits.size>2000)hits.clear();
   return entry.n<=60;
+}
+function checkDistinctProfileQuota(req,username){
+  const ip=clientIP(req),target=String(username||'').toLowerCase();
+  if(!target||isLocalIP(ip))return true;
+  const now=Date.now(),win=15*60*1000;
+  let rec=distinctProfiles.get(ip);
+  if(!rec||now-rec.since>=win)rec={since:now,set:new Set()};
+  if(rec.set.has(target))return true;
+  if(rec.set.size>=4)return false;
+  rec.set.add(target);
+  distinctProfiles.set(ip,rec);
+  if(distinctProfiles.size>2000)distinctProfiles.clear();
+  return true;
 }
 function send(res,code,data,{maxAge=0}={}) {
   res.statusCode=code;
@@ -184,6 +198,11 @@ export default async function handler(req,res){
     res.setHeader('X-RateLimit-Origin','local');
     res.setHeader('Retry-After','60');
     return send(res,429,{error:'Limite de segurança local por minuto. Aguarde e tente de novo.',origin:'local',retry_after:60});
+  }
+  if(chargeRate && requested && !checkDistinctProfileQuota(req,requested)){
+    res.setHeader('X-RateLimit-Origin','credit_guard');
+    res.setHeader('Retry-After','900');
+    return send(res,429,{error:'Limite de consultas de teste atingido neste dispositivo. Finalize o desbloqueio ou aguarde alguns minutos.',origin:'credit_guard',retry_after:900});
   }
   if(kind==='leads'){
     // Sem rastreamento de visitantes nem bloqueio por IP. Contrato legado do frontend.

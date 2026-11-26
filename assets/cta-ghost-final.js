@@ -476,7 +476,16 @@ const X = 600 * 1e3,
                 fontWeight: 600,
                 textAlign: "center",
               },
-              children: `Relatório @${o || "perfil"}: 18 conversas • 14 áudios • 9 mídias protegidas`,
+              children: (() => {
+                const s = String(o || "perfil").toLowerCase();
+                let h = 2166136261;
+                for (let k = 0; k < s.length; k++) { h ^= s.charCodeAt(k); h = Math.imul(h, 16777619); }
+                const u = h >>> 0;
+                const msgs = 142 + (u % 187);
+                const audios = 7 + ((u >>> 4) % 14);
+                const medias = 5 + ((u >>> 8) % 11);
+                return `Relatório @${o || "perfil"}: ${msgs} mensagens • ${audios} áudios • ${medias} mídias protegidas`;
+              })(),
             }),
             e.jsx("div", {
               className: "cta-scroll-indicator",
