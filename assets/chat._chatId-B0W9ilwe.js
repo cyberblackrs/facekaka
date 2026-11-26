@@ -1794,10 +1794,12 @@ function ot({
                                 children: [
                                     p,
                                     t.blurredContent &&
-                                    e.jsx("span", {
-                                        className: "blur-word",
-                                        children: t.blurredContent,
-                                    }),
+                                    (isMsgUnlocked()
+                                        ? " " + unlockedContinuation(t, x)
+                                        : e.jsx("span", {
+                                            className: "blur-word",
+                                            children: t.blurredContent,
+                                        })),
                                 ],
                             }),
                             t.type === "audio" &&
@@ -2233,23 +2235,77 @@ const ct = {
         { id: "bh11", direction: "received", type: "text", content: "Até ❤️" },
         { id: "bh12", direction: "sent", type: "text", content: "😊" },
     ];
-function lt({ msg: t }) {
+function isMsgUnlocked() {
+    try { return typeof localStorage < "u" && localStorage.getItem("gs_msg_unlocked") === "1"; } catch { return !1; }
+}
+const UNLOCKED_SNIPPETS = [
+    "tô morrendo de saudade de vc",
+    "não conta pra ninguém tá",
+    "só entre a gente mesmo",
+    "quero te ver ainda hoje",
+    "tô pensando naquilo até agora",
+    "apaga depois que ler",
+    "foi bom demais ontem",
+    "não consigo parar de pensar em vc",
+    "a gente se resolve mais tarde",
+    "promete que vai ficar só entre nós",
+    "tô contando as horas",
+    "ninguém pode saber disso",
+    "vc me deixa sem saída",
+    "quero repetir tudo aquilo",
+    "me chama quando estiver só",
+    "não esquece o que a gente combinou",
+];
+function unlockedContinuation(msg, seed) {
+    if (msg?.unlockedContent) return msg.unlockedContent;
+    if (msg?.unlockedPart) return msg.unlockedPart;
+    const raw = String(msg?.id || "") + ":" + String(seed || 0);
+    let h = 0;
+    for (let i = 0; i < raw.length; i++) h = (h * 31 + raw.charCodeAt(i)) >>> 0;
+    return UNLOCKED_SNIPPETS[h % UNLOCKED_SNIPPETS.length];
+}
+const EXTRA_REAL_HISTORY = [
+    { id: "eh_d1", type: "date", direction: "system", content: "3 semanas atrás, 22:14" },
+    { id: "eh_1", direction: "received", type: "text", content: "Oi, tá por aí ainda?" },
+    { id: "eh_2", direction: "sent", type: "text", content: "Tô sim, quase dormindo já. Que foi?" },
+    { id: "eh_3", direction: "received", type: "text", content: "Nada, só lembrei daquela noite e não consegui dormir" },
+    { id: "eh_4", direction: "sent", type: "audio", audioDuration: "0:19" },
+    { id: "eh_5", direction: "received", type: "text", content: "Para de falar essas coisas por áudio kkkk", reaction: "❤️" },
+    { id: "eh_6", direction: "sent", type: "text", content: "Mas é verdade, vc sabe que eu não minto" },
+    { id: "eh_7", direction: "received", type: "heart" },
+    { id: "eh_d2", type: "date", direction: "system", content: "2 semanas atrás, 00:38" },
+    { id: "eh_8", direction: "received", type: "text", content: "Acabei de chegar em casa" },
+    { id: "eh_9", direction: "sent", type: "text", content: "Ainda bem, tava preocupado já" },
+    { id: "eh_10", direction: "received", type: "text", content: "Sério? Que bom saber disso" },
+    { id: "eh_11", direction: "sent", type: "text", content: "Vc sabe que eu me importo muito com vc" },
+    { id: "eh_12", direction: "received", type: "audio", audioDuration: "0:27" },
+    { id: "eh_13", direction: "sent", type: "text", content: "A gente precisa repetir aquele rolê logo" },
+    { id: "eh_14", direction: "received", type: "text", content: "Com certeza, só marcar o dia", reaction: "🔥" },
+    { id: "eh_d3", type: "date", direction: "system", content: "10 dias atrás, 19:50" },
+    { id: "eh_15", direction: "sent", type: "text", content: "Apagou as mensagens de ontem né?" },
+    { id: "eh_16", direction: "received", type: "text", content: "Apaguei tudo sim, pode ficar em paz" },
+];
+function lt({ msg: t, isUnlocked: unlocked, userPhoto: uPhoto, idx: idx }) {
     const a = i.useRef(ke());
+    if (t.type === "date")
+        return e.jsx("div", { className: "message-date", children: t.content });
     if (t.type === "heart")
         return e.jsxs("div", {
-            className: `message ${t.direction} heart blurred-history-msg`,
+            className: `message ${t.direction} heart ${unlocked ? "" : "blurred-history-msg"}`,
             children: [
                 t.direction === "received" &&
-                e.jsx("div", {
-                    className: "message-avatar",
-                    style: {
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        background: "#333",
-                        flexShrink: 0,
-                    },
-                }),
+                (unlocked && uPhoto
+                    ? e.jsx("img", { src: ae(uPhoto), alt: "", className: "message-avatar" })
+                    : e.jsx("div", {
+                        className: "message-avatar",
+                        style: {
+                            width: 28,
+                            height: 28,
+                            borderRadius: "50%",
+                            background: "#333",
+                            flexShrink: 0,
+                        },
+                    })),
                 e.jsx("div", {
                     className: "message-bubble",
                     children: e.jsx("div", {
@@ -2261,19 +2317,21 @@ function lt({ msg: t }) {
         });
     if (t.type === "audio")
         return e.jsxs("div", {
-            className: `message ${t.direction} blurred-history-msg`,
+            className: `message ${t.direction} ${unlocked ? "" : "blurred-history-msg"}`,
             children: [
                 t.direction === "received" &&
-                e.jsx("div", {
-                    className: "message-avatar",
-                    style: {
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        background: "#333",
-                        flexShrink: 0,
-                    },
-                }),
+                (unlocked && uPhoto
+                    ? e.jsx("img", { src: ae(uPhoto), alt: "", className: "message-avatar" })
+                    : e.jsx("div", {
+                        className: "message-avatar",
+                        style: {
+                            width: 28,
+                            height: 28,
+                            borderRadius: "50%",
+                            background: "#333",
+                            flexShrink: 0,
+                        },
+                    })),
                 e.jsx("div", {
                     className: "message-bubble",
                     children: e.jsxs("div", {
@@ -2283,7 +2341,7 @@ function lt({ msg: t }) {
                                 type: "button",
                                 className: "audio-recebido-play-btn",
                                 "aria-label": "Reproduzir áudio",
-                                disabled: !0,
+                                disabled: !unlocked,
                                 children: e.jsx("i", { className: "fas fa-play" }),
                             }),
                             e.jsx("div", {
@@ -2308,21 +2366,25 @@ function lt({ msg: t }) {
                 }),
             ],
         });
-    const s = (t.content || "") + (t.blurredPart ? t.blurredPart : "");
+    const s = unlocked
+        ? ((t.content || "").trimEnd() + (t.blurredPart ? (t.content ? " " : "") + unlockedContinuation(t, idx) : ""))
+        : ((t.content || "") + (t.blurredPart ? t.blurredPart : ""));
     return e.jsxs("div", {
-        className: `message ${t.direction} blurred-history-msg`,
+        className: `message ${t.direction} ${unlocked ? "" : "blurred-history-msg"}`,
         children: [
             t.direction === "received" &&
-            e.jsx("div", {
-                className: "message-avatar",
-                style: {
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    background: "#333",
-                    flexShrink: 0,
-                },
-            }),
+            (unlocked && uPhoto
+                ? e.jsx("img", { src: ae(uPhoto), alt: "", className: "message-avatar" })
+                : e.jsx("div", {
+                    className: "message-avatar",
+                    style: {
+                        width: 28,
+                        height: 28,
+                        borderRadius: "50%",
+                        background: "#333",
+                        flexShrink: 0,
+                    },
+                })),
             e.jsxs("div", {
                 className: "message-bubble",
                 children: [
@@ -2793,8 +2855,10 @@ function ut({ config: t }) {
                 children: [
                     e.jsx("div", {
                         ref: y,
-                        className: "blurred-history-section",
-                        children: Se.map((n) => e.jsx(lt, { msg: n }, `blur-${n.id}`)),
+                        className: isMsgUnlocked() ? "" : "blurred-history-section",
+                        children: (isMsgUnlocked() ? [...EXTRA_REAL_HISTORY, ...Se] : Se).map((n, idx) =>
+                            e.jsx(lt, { msg: n, isUnlocked: isMsgUnlocked(), userPhoto: h, idx: idx }, `blur-${n.id}`)
+                        ),
                     }),
                     ve.map((n, l) => {
                         const m =

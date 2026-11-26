@@ -55,10 +55,12 @@ test('rotas e helpers suportam chats 1 a 18', () => {
   assert.match(devServerSrc, /1\[0-8\]/);
 });
 
-test('pagamento confirmado seta gs_msg_unlocked e index.html remove .blur-word', () => {
+test('pagamento confirmado seta gs_msg_unlocked e revela texto real sem blur', () => {
   assert.match(obrigadoSrc, /localStorage\.setItem\('gs_msg_unlocked',\s*'1'\)/);
   assert.match(indexSrc, /localStorage\.getItem\('gs_msg_unlocked'\)\s*===\s*'1'/);
-  assert.match(indexSrc, /\.blur-word\{display:none!important\}/);
+  assert.match(indexSrc, /\.blurred-history-section/);
+  assert.match(chatSrc, /unlockedContinuation/);
+  assert.match(chatSrc, /EXTRA_REAL_HISTORY/);
 });
 
 test('botão Ajuda aparece apenas após pagamento e sem termos de prévia/demo', () => {
