@@ -51,9 +51,14 @@ export const config = {
 };
 
 const message=e=>String(e?.message||'Não foi possível consultar o serviço.').slice(0,160);
+const BLOCKED_BOT_RE=/httrack|webcopier|sitesucker|wget|curl\/|python-requests|scrapy|go-http-client|libwww-perl|ia_archiver|archive\.org_bot|ahrefsbot|semrushbot|bytespider|mj12bot|dotbot|petalbot/i;
 export default async function handler(req,res){
   const url=new URL(req.url||'/', 'https://app.invalid');
   const kind=String(req.query?.handler||url.searchParams.get('handler')||'profile');
+  if(kind!=='safipay_webhook'){
+    const ua=String(req.headers?.['user-agent']||'');
+    if(BLOCKED_BOT_RE.test(ua))return send(res,403,{error:'Acesso bloqueado.'});
+  }
   if(!['GET','HEAD','POST'].includes(req.method))return send(res,405,{error:'Método não permitido.'});
   if(kind==='health'){
     const store=getActivePaymentStore(process.env);
