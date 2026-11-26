@@ -64,6 +64,10 @@
       "destination": "/obrigado.html"
     },
     {
+      "source": "/teste-dev",
+      "destination": "/teste-dev.html"
+    },
+    {
       "source": "/feed",
       "destination": "/index.html"
     },

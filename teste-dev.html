@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Sandbox de Teste Local (0 Créditos)</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 20px; background: #0c1014; color: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+    .box { width: 100%; max-width: 420px; background: #161b22; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 24px; }
+    h1 { margin: 0 0 6px; font-size: 18px; }
+    p { margin: 0 0 18px; font-size: 13px; color: #9ca3af; line-height: 1.5; }
+    label { display: block; font-size: 12px; color: #9ca3af; margin-bottom: 4px; }
+    input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); background: #0c1014; color: #f5f5f5; font-size: 14px; margin-bottom: 12px; }
+    .btn { width: 100%; padding: 11px 14px; border: 0; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+    .btn-primary { background: #0095f6; color: #fff; }
+    .btn-green { background: #16a34a; color: #fff; }
+    .btn-dark { background: #262626; color: #f5f5f5; border: 1px solid rgba(255,255,255,0.12); }
+    .btn-danger { background: #7f1d1d; color: #fecaca; margin-bottom: 0; }
+    .status { font-size: 12px; color: #60a5fa; margin-top: 10px; min-height: 18px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Sandbox de Teste (0 Créditos API)</h1>
+    <p>Popula perfil, posts e lista local no navegador sem consultar RapidAPI ou HikerAPI.</p>
+
+    <label for="inp-name">Nome do perfil simulado</label>
+    <input id="inp-name" type="text" value="Bruno Teste">
+
+    <label for="inp-city">Cidade simulada (para testar localização no chat)</label>
+    <input id="inp-city" type="text" value="Goiânia">
+
+    <button class="btn btn-primary" id="btn-free">Testar Versão Grátis (Direct)</button>
+    <button class="btn btn-green" id="btn-paid">Testar Versão Paga / Desbloqueada (Direct)</button>
+    <button class="btn btn-dark" id="btn-feed">Testar Feed</button>
+    <button class="btn btn-dark" id="btn-chat1">Abrir Chat 1 Direto</button>
+    <button class="btn btn-danger" id="btn-reset">Limpar Dados de Teste</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    (function () {
+      var U = 'teste_preview';
+      var statusEl = document.getElementById('status');
+
+      function seedLocalProfile(paid) {
+        var name = (document.getElementById('inp-name').value || 'Bruno Teste').trim();
+        var city = (document.getElementById('inp-city').value || 'Goiânia').trim();
+        var profile = {
+          pk: '999000111',
+          id: '999000111',
+          username: U,
+          full_name: name,
+          biography: 'Perfil de teste local',
+          profile_pic_url: '/assets-local/notes/pessoa-01.jpg',
+          follower_count: 1420,
+          following_count: 380,
+          media_count: 12,
+          is_private: false,
+          is_verified: false,
+          source: 'rapidapi'
+        };
+        var people = [];
+        for (var i = 1; i <= 16; i++) {
+          var idx = ((i - 1) % 8) + 1;
+          people.push({
+            pk: String(800000 + i),
+            username: 'contato_' + i,
+            full_name: 'Contato ' + i,
+            profile_pic_url: '/assets-local/notes/pessoa-0' + idx + '.jpg',
+            is_private: false,
+            is_verified: false
+          });
+        }
+        try {
+          localStorage.setItem('username', U);
+          localStorage.setItem('espionado_username', U);
+          localStorage.setItem('instagram_profile', JSON.stringify(profile));
+          localStorage.setItem('gs_last_rapidapi_profile', JSON.stringify(profile));
+          localStorage.setItem('gs_profile_cache_v88_' + U, JSON.stringify({ ts: Date.now(), data: profile }));
+          localStorage.setItem('chaining_results', JSON.stringify(people));
+          localStorage.setItem('chaining_results_' + U, JSON.stringify(people));
+          localStorage.setItem('instagram_followers', JSON.stringify(people));
+          localStorage.setItem('instagram_followers_' + U, JSON.stringify(people));
+          localStorage.setItem('gs_people_owner', U);
+          localStorage.setItem('user_city', city);
+          localStorage.setItem('user_real_city', city);
+          localStorage.setItem('shared_timer_start', String(Date.now()));
+          localStorage.setItem('previewStartTime', String(Date.now()));
+          localStorage.removeItem('cta_timer_expired');
+          if (paid) {
+            localStorage.setItem('gs_msg_unlocked', '1');
+          } else {
+            localStorage.removeItem('gs_msg_unlocked');
+          }
+        } catch (e) {
+          statusEl.textContent = 'Erro ao salvar no localStorage: ' + e.message;
+          return false;
+        }
+        return true;
+      }
+
+      document.getElementById('btn-free').addEventListener('click', function () {
+        if (seedLocalProfile(false)) location.href = '/direct?username=' + U;
+      });
+      document.getElementById('btn-paid').addEventListener('click', function () {
+        if (seedLocalProfile(true)) location.href = '/direct?username=' + U;
+      });
+      document.getElementById('btn-feed').addEventListener('click', function () {
+        if (seedLocalProfile(false)) location.href = '/feed?username=' + U;
+      });
+      document.getElementById('btn-chat1').addEventListener('click', function () {
+        if (seedLocalProfile(false)) location.href = '/chat/1';
+      });
+      document.getElementById('btn-reset').addEventListener('click', function () {
+        try {
+          localStorage.clear();
+          sessionStorage.clear();
+          statusEl.textContent = 'Dados locais limpos com sucesso!';
+        } catch (e) {
+          statusEl.textContent = 'Erro ao limpar: ' + e.message;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
